@@ -205,6 +205,31 @@
   .ic{font-style:normal; margin-right:6px;}
   .av .r{display:flex;gap:12px;padding:9px 0;border-top:1px solid var(--line2);font-size:12.5px;} .av .r:first-child{border-top:none;}
   .av .w{min-width:70px;color:var(--faint);font-size:11.5px;}
+
+  /* copilot */
+  .cop-launch{position:fixed; right:22px; bottom:22px; z-index:50; display:inline-flex; align-items:center; gap:8px; background:var(--accent); color:var(--accent-dk); font-weight:700; font-size:13.5px; padding:12px 18px; border-radius:99px; border:none; cursor:pointer; box-shadow:0 8px 26px rgba(0,0,0,.45);}
+  .cop-panel{position:fixed; right:0; top:0; height:100vh; width:384px; max-width:92vw; background:var(--panel); border-left:1px solid var(--line); z-index:60; display:flex; flex-direction:column; transform:translateX(105%); transition:transform .22s ease;}
+  .cop-panel.open{transform:translateX(0);}
+  .cop-h{display:flex; align-items:center; justify-content:space-between; padding:16px 18px; border-bottom:1px solid var(--line);}
+  .cop-h .ct{font-weight:700; font-size:14px; display:flex; align-items:center; gap:9px;}
+  .cop-h .ct .d{width:24px;height:24px;border-radius:7px;background:var(--accent-soft);color:var(--accent-ink);display:flex;align-items:center;justify-content:center;font-size:13px;}
+  .cop-x{background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer;line-height:1;}
+  .cop-body{flex:1; overflow-y:auto; padding:18px;}
+  .cmsg{margin-bottom:16px;} .cmsg .who{font-size:11px; color:var(--faint); margin-bottom:5px;}
+  .cmsg.u{display:flex; flex-direction:column; align-items:flex-end;}
+  .cmsg.u .b{background:var(--accent-soft); color:var(--ink); border-radius:13px 13px 4px 13px; padding:10px 13px; font-size:13.5px; max-width:88%;}
+  .cmsg.a .b{background:var(--panel2); border:1px solid var(--line); border-radius:13px 13px 13px 4px; padding:12px 14px; font-size:13.5px;}
+  .action{border:1px solid var(--line); border-radius:9px; padding:11px 12px; margin-top:10px; background:var(--bg);}
+  .action .at{font-weight:600; font-size:13px; display:flex; align-items:center; gap:7px;}
+  .action .ad{color:var(--muted); font-size:12px; margin:4px 0 9px;}
+  .action .arow{display:flex; gap:8px;}
+  .abtn{font-size:12px; font-weight:600; padding:6px 12px; border-radius:7px; border:none; cursor:pointer;}
+  .abtn.ok{background:var(--accent); color:var(--accent-dk);} .abtn.no{background:var(--panel2); color:var(--muted); border:1px solid var(--line);}
+  .done{font-size:12px; color:var(--accent-ink); font-weight:600;}
+  .cop-note{font-size:11px; color:var(--faint); padding:0 18px 10px; display:flex; align-items:center; gap:6px;}
+  .cop-in{border-top:1px solid var(--line); padding:14px 16px; display:flex; gap:9px; align-items:center;}
+  .cop-in input{flex:1; background:var(--panel2); border:1px solid var(--line); border-radius:9px; height:38px; padding:0 12px; color:var(--ink); font-size:13px; outline:none;}
+  .cop-in .snd{background:var(--accent); color:var(--accent-dk); border:none; border-radius:9px; width:38px; height:38px; font-size:15px; cursor:pointer;}
 </style>
 </head>
 <body>
@@ -219,6 +244,7 @@
       <a><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3 3-5 6-5s6 2 6 5"/><path d="M16 6a3 3 0 010 6"/><path d="M21 20c0-2-1.5-3.5-3.5-4"/></svg><span>Contacts</span></a>
       <a><svg viewBox="0 0 24 24"><path d="M6 3h9l5 5v13H6z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h6"/></svg><span>Reports</span></a>
       <div class="sec">Workspace</div>
+      <a href="build.html"><svg viewBox="0 0 24 24"><path d="M6 3h9l5 5v13H6z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h6"/></svg><span>Build guide</span></a>
       <a><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 00-.1-1l2-1.5-2-3.5-2.4 1a7 7 0 00-1.7-1L16 2H8l-.8 3a7 7 0 00-1.7 1l-2.4-1-2 3.5L3 11a7 7 0 000 2l-2 1.5 2 3.5 2.4-1a7 7 0 001.7 1L8 22h8l.8-3a7 7 0 001.7-1l2.4 1 2-3.5-2-1.5a7 7 0 00.1-1z"/></svg><span>Settings</span></a>
     </nav>
     <div class="me"><span class="ava">JR</span><div><div class="nm">Jordan Rivera</div><div class="rl">Enterprise AE</div></div></div>
@@ -341,6 +367,48 @@
     </div>
   </div>
 </div>
+
+<button class="cop-launch" id="copLaunch">✦ Ask copilot</button>
+<div class="cop-panel" id="copPanel">
+  <div class="cop-h">
+    <div class="ct"><span class="d">✦</span> Copilot</div>
+    <button class="cop-x" id="copClose">×</button>
+  </div>
+  <div class="cop-body">
+    <div class="cmsg u"><div class="b">Draft a follow-up to Maya Chen at Tidewater and push the close date to next Friday.</div></div>
+    <div class="cmsg a">
+      <div class="who">Copilot · acting as jordan@acme.com</div>
+      <div class="b">
+        On it — here are the two actions I'll take. Review and confirm:
+        <div class="action">
+          <div class="at">✉️ Draft email — Maya Chen <span style="color:var(--muted);font-weight:400;">(VP Ecommerce)</span></div>
+          <div class="ad">"Quick follow-up — and congrats on the raise." References the Series C, asks for 20 min this week.</div>
+          <div class="arow"><button class="abtn ok">Approve &amp; send</button><button class="abtn no">Edit</button></div>
+        </div>
+        <div class="action">
+          <div class="at">📅 Update opportunity — Tidewater Goods</div>
+          <div class="ad">Close date → <b style="color:var(--ink)">Fri, Jun 19</b> · field write in Salesforce</div>
+          <div class="arow"><button class="abtn ok">Approve</button><button class="abtn no">Cancel</button></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="cop-note">🔒 Acts with your permissions (SSO) · writes need your approval · every action logged</div>
+  <div class="cop-in"><input placeholder="Ask the copilot to do something…" /><button class="snd">↑</button></div>
+</div>
+
+<script>
+(function(){
+  var L=document.getElementById('copLaunch'), P=document.getElementById('copPanel'), X=document.getElementById('copClose');
+  L.addEventListener('click', function(){ P.classList.add('open'); });
+  X.addEventListener('click', function(){ P.classList.remove('open'); });
+  P.addEventListener('click', function(e){
+    var b=e.target.closest('.abtn'); if(!b) return;
+    var row=b.closest('.arow');
+    row.innerHTML = b.classList.contains('ok') ? '<span class="done">✓ Done · logged to audit trail</span>' : '<span class="done" style="color:var(--muted)">Dismissed</span>';
+  });
+})();
+</script>
 
 <script>
 (function(){
