@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Morning Brief — Technical Overview</title>
+<meta name="description" content="Technical overview of the Morning Brief seller agent — architecture, data flow, the agents, the copilot, and security posture." />
+<style>
+  :root{
+    --bg:#0a0c11; --panel:#13161e; --panel2:#171b24; --code:#0e1118; --hover:#1b202b;
+    --ink:#f1f3f8; --ink2:#d4d9e4; --muted:#8e95a6; --faint:#5d6576;
+    --line:#20242f; --line2:#191d26;
+    --accent:#5fe6a4; --accent-soft:rgba(95,230,164,.12); --accent-ink:#8aeebd;
+    --blue:#5aa6ff; --blue-soft:rgba(90,166,255,.12); --blue-ink:#8cc1ff;
+    --amber:#f2ad2e; --amber-soft:rgba(242,173,46,.12); --amber-ink:#f4bd5c;
+    --red:#ff6058; --red-soft:rgba(255,96,88,.12); --red-ink:#ff968f;
+    --violet:#8b7dff; --violet-soft:rgba(139,125,255,.13); --violet-ink:#b7adff;
+    --mono:"SF Mono",ui-monospace,"JetBrains Mono",Menlo,Consolas,monospace;
+    --r:14px; --r-sm:9px;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--bg); color:var(--ink); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; font-size:15px; line-height:1.65; -webkit-font-smoothing:antialiased;}
+  a{color:var(--accent-ink); text-decoration:none;} a:hover{text-decoration:underline;}
+  svg{display:block;}
+  .layout{display:grid; grid-template-columns:248px 1fr; max-width:1180px; margin:0 auto; gap:0;}
+  @media(max-width:880px){ .layout{grid-template-columns:1fr;} .toc{display:none;} }
+
+  .toc{position:sticky; top:0; align-self:start; height:100vh; overflow-y:auto; border-right:1px solid var(--line); padding:26px 18px 40px;}
+  .toc .tt{display:flex; align-items:center; gap:9px; font-weight:700; font-size:14px; margin-bottom:18px;}
+  .toc .tt .mk{width:24px; height:24px; border-radius:7px; background:var(--accent); color:#06140d; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:800;}
+  .toc a{display:block; color:var(--muted); font-size:13px; padding:5px 10px; border-radius:7px; border-left:2px solid transparent;}
+  .toc a:hover{color:var(--ink); background:var(--hover); text-decoration:none;}
+  .toc .n{color:var(--faint); margin-right:7px; font-variant-numeric:tabular-nums;}
+
+  .doc{padding:44px 52px 100px; min-width:0; max-width:860px;}
+  @media(max-width:880px){ .doc{padding:32px 22px 80px;} }
+
+  .eyebrow{font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--accent-ink); margin:0 0 12px;}
+  h1{font-size:32px; line-height:1.15; letter-spacing:-.02em; margin:0 0 12px; font-weight:680;}
+  .lede{font-size:17px; color:var(--ink2); margin:0 0 18px;}
+  .docmeta{font-size:13px; color:var(--faint); border-top:1px solid var(--line); border-bottom:1px solid var(--line); padding:12px 0; margin:24px 0 8px; display:flex; gap:22px; flex-wrap:wrap;}
+  .docmeta b{color:var(--muted); font-weight:600;}
+
+  section{padding:36px 0 8px; border-top:1px solid var(--line2); margin-top:20px;}
+  section:first-of-type{border-top:none;}
+  h2{font-size:23px; letter-spacing:-.01em; margin:0 0 6px; font-weight:660;}
+  h2 .num{color:var(--accent-ink); font-weight:700; margin-right:10px; font-size:18px;}
+  h3{font-size:16px; margin:26px 0 8px; font-weight:650; color:var(--ink);}
+  p{margin:0 0 14px; color:var(--ink2);}
+  .sub{color:var(--muted); font-size:14.5px; margin:-2px 0 18px;}
+  ul,ol{margin:0 0 16px; padding-left:20px;} li{margin:0 0 7px; color:var(--ink2);}
+  strong{color:var(--ink); font-weight:650;}
+  code{font-family:var(--mono); font-size:12.5px; background:var(--panel2); color:var(--accent-ink); padding:1px 6px; border-radius:5px;}
+
+  .panel{background:var(--panel); border:1px solid var(--line); border-radius:var(--r); padding:18px 20px; margin:0 0 18px;}
+  .diagram{background:var(--panel); border:1px solid var(--line); border-radius:var(--r); padding:22px; margin:8px 0 20px; overflow-x:auto;}
+  .cap{font-size:12.5px; color:var(--faint); margin-top:8px; text-align:center;}
+
+  pre{background:var(--code); border:1px solid var(--line); border-radius:var(--r-sm); padding:16px 18px; overflow-x:auto; margin:0 0 18px;}
+  pre code{background:none; color:var(--ink2); padding:0; font-size:12.5px; line-height:1.65;}
+  .cm{color:var(--faint);} .kw{color:var(--violet-ink);} .st{color:var(--accent-ink);} .nm{color:var(--blue-ink);}
+
+  table{width:100%; border-collapse:collapse; margin:0 0 18px; font-size:13.5px;}
+  th,td{text-align:left; padding:10px 12px; border-bottom:1px solid var(--line2); vertical-align:top;}
+  th{font-size:11.5px; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); font-weight:600;}
+  td{color:var(--ink2);} td code{font-size:12px;}
+
+  .pill{display:inline-block; font-size:11px; font-weight:700; padding:2px 9px; border-radius:99px;}
+  .pill.a{background:var(--accent-soft); color:var(--accent-ink);}
+  .pill.b{background:var(--blue-soft); color:var(--blue-ink);}
+  .pill.v{background:var(--violet-soft); color:var(--violet-ink);}
+  .pill.m{background:var(--amber-soft); color:var(--amber-ink);}
+
+  .wf{border:1px solid var(--line); border-left:3px solid var(--accent); border-radius:0 var(--r-sm) var(--r-sm) 0; background:var(--panel); padding:16px 18px; margin:0 0 14px;}
+  .wf h3{margin:0 0 4px;} .wf .io{font-size:12.5px; color:var(--muted); margin:8px 0;}
+  .wf .io b{color:var(--ink2);}
+  .guard{font-size:12.5px; color:var(--amber-ink); background:var(--amber-soft); border-radius:7px; padding:8px 11px; margin-top:8px;}
+
+  .note{background:var(--accent-soft); border:1px solid rgba(95,230,164,.2); border-radius:var(--r-sm); padding:13px 16px; margin:0 0 18px; font-size:14px; color:var(--ink2);}
+  .foot{border-top:1px solid var(--line); margin-top:40px; padding-top:18px; color:var(--faint); font-size:13px;}
+</style>
+</head>
+<body>
+<div class="layout">
+
+  <nav class="toc">
+    <div class="tt"><span class="mk">A</span> Technical overview</div>
+    <a href="#approach"><span class="n">01</span>Approach</a>
+    <a href="#arch"><span class="n">02</span>System architecture</a>
+    <a href="#run"><span class="n">03</span>The morning run</a>
+    <a href="#workflows"><span class="n">04</span>The four workflows</a>
+    <a href="#data"><span class="n">05</span>Data model</a>
+    <a href="#scoring"><span class="n">06</span>Scoring engine</a>
+    <a href="#news"><span class="n">07</span>News agent (Browserbase)</a>
+    <a href="#llm"><span class="n">08</span>LLM layer &amp; prompts</a>
+    <a href="#copilot"><span class="n">09</span>Conversational copilot</a>
+    <a href="#apis"><span class="n">10</span>Integrations &amp; APIs</a>
+    <a href="#stack"><span class="n">11</span>Stack &amp; hosting</a>
+    <a href="#eval"><span class="n">12</span>Eval &amp; testing</a>
+    <a href="#sec"><span class="n">13</span>Guardrails &amp; security</a>
+    <a href="#phases"><span class="n">14</span>Build phases</a>
+  </nav>
+
+  <main class="doc">
+    <a href="/" style="display:inline-block; color:var(--muted); font-size:13px; margin-bottom:18px;">← Back to the live dashboard</a>
+    <p class="eyebrow">Technical overview</p>
+    <h1>Morning Brief — technical overview</h1>
+    <p class="lede">How the Morning Brief agent works end to end: the architecture, the daily pipeline, the agents and their guardrails, the conversational copilot that turns insight into action, the security posture, and a phased plan to deliver it.</p>
+    <div class="docmeta">
+      <span><b>Prepared by</b> &nbsp;Taylor — GTM / Revenue Enablement</span>
+      <span><b>Audience</b> &nbsp;CTO / engineering leadership</span>
+      <span><b>Status</b> &nbsp;Design complete · interactive mock live</span>
+    </div>
+
+    <section id="approach">
+      <h2><span class="num">01</span>Approach</h2>
+      <p>The system is delivered as a loop, not a big-bang. Each agent or workflow is shipped through the same five steps, and the whole system is delivered in thin, demoable slices so value shows up early and integration risk stays low.</p>
+      <p><strong>The loop, per workflow:</strong> <code>Job → Tools → Guardrails → Eval → Iterate</code>. Define the one job, give it the minimum tools, decide what it must never do, write the test cases <em>before</em> building, then iterate until it passes.</p>
+      <p><strong>Delivery order (thin slices):</strong></p>
+      <ul>
+        <li><span class="pill a">A</span> &nbsp;Mock on fake data — prove the output and UX. <em>(done — see the dashboard)</em></li>
+        <li><span class="pill b">B</span> &nbsp;Scripted prototype — real scoring logic on a CSV export, no live APIs.</li>
+        <li><span class="pill v">C</span> &nbsp;Wire one source (Salesforce read) end-to-end to Slack for one rep.</li>
+        <li><span class="pill m">D</span> &nbsp;Add the news agent + LLM assembly, then the dashboard read-API.</li>
+        <li><span class="pill a">E</span> &nbsp;Pilot with 5–8 reps, tune weights, then roll out.</li>
+      </ul>
+      <div class="note">Design principle: the daily agent is <strong>read-only and advisory</strong>. Any write action runs through the copilot (§09), which acts as the signed-in user with explicit confirmation — so the riskiest scopes are never granted to an autonomous background job.</div>
+    </section>
+
+    <section id="arch">
+      <h2><span class="num">02</span>System architecture</h2>
+      <p class="sub">Five sources feed a scheduled orchestrator, which runs three processing jobs into a store that two surfaces read from.</p>
+      <div class="diagram">
+        <svg viewBox="0 0 820 360" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="ui-sans-serif,system-ui,sans-serif">
+          <defs>
+            <marker id="ar" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#5fe6a4"/></marker>
+          </defs>
+          <text x="20" y="22" fill="#8e95a6" font-size="11" font-weight="700" letter-spacing="1">SOURCES</text>
+          <g font-size="12">
+            <rect x="20" y="34" width="150" height="34" rx="7" fill="#171b24" stroke="#20242f"/><text x="34" y="55" fill="#d4d9e4">Salesforce (CRM)</text>
+            <rect x="20" y="74" width="150" height="34" rx="7" fill="#171b24" stroke="#20242f"/><text x="34" y="95" fill="#d4d9e4">Calendar</text>
+            <rect x="20" y="114" width="150" height="34" rx="7" fill="#171b24" stroke="#20242f"/><text x="34" y="135" fill="#d4d9e4">Email engagement</text>
+            <rect x="20" y="154" width="150" height="34" rx="7" fill="#171b24" stroke="#20242f"/><text x="34" y="175" fill="#d4d9e4">ZoomInfo (enrich)</text>
+            <rect x="20" y="194" width="150" height="34" rx="7" fill="#171b24" stroke="#20242f"/><text x="34" y="215" fill="#d4d9e4">Web · Browserbase</text>
+          </g>
+          <rect x="250" y="60" width="150" height="170" rx="10" fill="#13161e" stroke="#5fe6a4"/>
+          <text x="325" y="48" fill="#8e95a6" font-size="11" font-weight="700" letter-spacing="1" text-anchor="middle">ORCHESTRATOR</text>
+          <text x="325" y="86" fill="#f1f3f8" font-size="12.5" font-weight="700" text-anchor="middle">Scheduled run</text>
+          <text x="325" y="104" fill="#8e95a6" font-size="11" text-anchor="middle">cron · ~6:00am</text>
+          <g font-size="11.5">
+            <rect x="266" y="120" width="118" height="28" rx="6" fill="#171b24" stroke="#20242f"/><text x="325" y="138" fill="#d4d9e4" text-anchor="middle">Scoring job</text>
+            <rect x="266" y="152" width="118" height="28" rx="6" fill="#171b24" stroke="#20242f"/><text x="325" y="170" fill="#d4d9e4" text-anchor="middle">News agent</text>
+            <rect x="266" y="184" width="118" height="28" rx="6" fill="#171b24" stroke="#20242f"/><text x="325" y="202" fill="#d4d9e4" text-anchor="middle">LLM assembly</text>
+          </g>
+          <rect x="470" y="100" width="140" height="90" rx="10" fill="#171b24" stroke="#20242f"/>
+          <text x="540" y="88" fill="#8e95a6" font-size="11" font-weight="700" letter-spacing="1" text-anchor="middle">STORE</text>
+          <text x="540" y="138" fill="#f1f3f8" font-size="12.5" font-weight="700" text-anchor="middle">Postgres</text>
+          <text x="540" y="158" fill="#8e95a6" font-size="11" text-anchor="middle">scores · briefs · news</text>
+          <text x="700" y="48" fill="#8e95a6" font-size="11" font-weight="700" letter-spacing="1">DELIVERY</text>
+          <rect x="660" y="74" width="140" height="44" rx="8" fill="#171b24" stroke="#5fe6a4"/><text x="730" y="100" fill="#d4d9e4" font-size="12.5" text-anchor="middle">Slack (Block Kit)</text>
+          <rect x="660" y="170" width="140" height="44" rx="8" fill="#171b24" stroke="#5fe6a4"/><text x="730" y="196" fill="#d4d9e4" font-size="12.5" text-anchor="middle">Dashboard + copilot</text>
+          <line x1="170" y1="130" x2="248" y2="130" stroke="#5fe6a4" stroke-width="1.5" marker-end="url(#ar)"/>
+          <line x1="400" y1="145" x2="468" y2="145" stroke="#5fe6a4" stroke-width="1.5" marker-end="url(#ar)"/>
+          <line x1="610" y1="130" x2="658" y2="100" stroke="#5fe6a4" stroke-width="1.5" marker-end="url(#ar)"/>
+          <line x1="610" y1="160" x2="658" y2="190" stroke="#5fe6a4" stroke-width="1.5" marker-end="url(#ar)"/>
+        </svg>
+        <div class="cap">Sources → scheduled orchestrator (3 jobs) → store → Slack + dashboard. Read-only into source systems; writes happen only via the user-driven copilot.</div>
+      </div>
+      <table>
+        <tr><th>Component</th><th>Responsibility</th><th>Suggested tech</th></tr>
+        <tr><td><strong>Orchestrator</strong></td><td>Scheduled trigger; runs the three jobs in sequence per rep; handles retries</td><td><code>cron</code> / Railway cron / Cloud Scheduler → a worker</td></tr>
+        <tr><td><strong>Scoring job</strong></td><td>Deterministic risk + momentum scores from CRM data</td><td>Python / Node — pure functions</td></tr>
+        <tr><td><strong>News agent</strong></td><td>Browse + extract account news, match to accounts, attribute sources</td><td>Browserbase (headless Chromium) + LLM extract</td></tr>
+        <tr><td><strong>LLM assembly</strong></td><td>Summarize, rank, write reasons — grounded, JSON out</td><td>Claude / GPT with a strict output schema</td></tr>
+        <tr><td><strong>Store</strong></td><td>Persist scores, briefs, news; serve the dashboard</td><td>Postgres (+ small read API)</td></tr>
+        <tr><td><strong>Delivery</strong></td><td>Post Slack brief; expose dashboard JSON; host the copilot</td><td>Slack Web API · REST/JSON endpoint</td></tr>
+      </table>
+    </section>
+
+    <section id="run">
+      <h2><span class="num">03</span>The morning run (pipeline)</h2>
+      <p class="sub">One scheduled job per rep, finishing before the workday starts. End-to-end is a few minutes.</p>
+      <div class="diagram">
+        <svg viewBox="0 0 820 130" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="ui-sans-serif,system-ui,sans-serif">
+          <defs><marker id="ar2" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#5fe6a4"/></marker></defs>
+          <g font-size="12" text-anchor="middle">
+            <rect x="10" y="40" width="116" height="48" rx="8" fill="#171b24" stroke="#20242f"/><text x="68" y="60" fill="#8aeebd" font-size="11" font-weight="700">6:00</text><text x="68" y="77" fill="#d4d9e4">Pull data</text>
+            <rect x="146" y="40" width="116" height="48" rx="8" fill="#171b24" stroke="#20242f"/><text x="204" y="60" fill="#8aeebd" font-size="11" font-weight="700">6:03</text><text x="204" y="77" fill="#d4d9e4">Score deals</text>
+            <rect x="282" y="40" width="116" height="48" rx="8" fill="#171b24" stroke="#20242f"/><text x="340" y="60" fill="#8aeebd" font-size="11" font-weight="700">6:06</text><text x="340" y="77" fill="#d4d9e4">Scan news</text>
+            <rect x="418" y="40" width="116" height="48" rx="8" fill="#171b24" stroke="#20242f"/><text x="476" y="60" fill="#8aeebd" font-size="11" font-weight="700">6:10</text><text x="476" y="77" fill="#d4d9e4">Summarize</text>
+            <rect x="554" y="40" width="116" height="48" rx="8" fill="#171b24" stroke="#20242f"/><text x="612" y="60" fill="#8aeebd" font-size="11" font-weight="700">6:13</text><text x="612" y="77" fill="#d4d9e4">Assemble</text>
+            <rect x="690" y="40" width="120" height="48" rx="8" fill="#13161e" stroke="#5fe6a4"/><text x="750" y="60" fill="#8aeebd" font-size="11" font-weight="700">6:15</text><text x="750" y="77" fill="#d4d9e4">Deliver</text>
+          </g>
+          <g stroke="#5fe6a4" stroke-width="1.5">
+            <line x1="126" y1="64" x2="144" y2="64" marker-end="url(#ar2)"/><line x1="262" y1="64" x2="280" y2="64" marker-end="url(#ar2)"/>
+            <line x1="398" y1="64" x2="416" y2="64" marker-end="url(#ar2)"/><line x1="534" y1="64" x2="552" y2="64" marker-end="url(#ar2)"/>
+            <line x1="670" y1="64" x2="688" y2="64" marker-end="url(#ar2)"/>
+          </g>
+        </svg>
+      </div>
+      <ol>
+        <li><strong>Pull</strong> — fetch each rep's open opps, activities, contacts, today's calendar (read-only).</li>
+        <li><strong>Score</strong> — deterministic risk + momentum per opportunity (§06).</li>
+        <li><strong>Scan news</strong> — the browser agent checks each top account's signals overnight (§07).</li>
+        <li><strong>Summarize</strong> — LLM writes the "so-what" for news and the recommended actions, grounded in the pulled data only (§08).</li>
+        <li><strong>Assemble</strong> — build the per-rep brief object: top-5, risk watchlist, follow-ups, heating-up, day plan.</li>
+        <li><strong>Deliver</strong> — post the concise Slack brief and write the full brief to the store for the dashboard.</li>
+      </ol>
+    </section>
+
+    <section id="workflows">
+      <h2><span class="num">04</span>The four workflows</h2>
+      <p class="sub">Each is a discrete job with one responsibility, its own tools, and its own guardrails — so they can be built, tested, and swapped independently.</p>
+
+      <div class="wf">
+        <h3>① Account scoring <span class="pill a">deterministic</span></h3>
+        <p>Compute a risk score and a week-over-week momentum delta for every open opportunity.</p>
+        <div class="io"><b>In:</b> opps, activities, stage history, engagement · <b>Out:</b> <code>{account_id, risk, momentum, reasons[]}</code></div>
+        <div class="guard">Guardrail: pure + explainable — every score carries the signals that produced it. No LLM here, so it's reproducible and testable.</div>
+      </div>
+
+      <div class="wf">
+        <h3>② News &amp; signals agent <span class="pill m">browser</span></h3>
+        <p>Browse the web for each top account, extract relevant events, match them to accounts and open opps, and attach a source link.</p>
+        <div class="io"><b>In:</b> account names + domains · <b>Out:</b> <code>{account_id, headline, type, source_url, ts}</code></div>
+        <div class="guard">Guardrail: every item must carry a real source URL or it's dropped. No fabricated or unsourced news.</div>
+      </div>
+
+      <div class="wf">
+        <h3>③ Brief assembly <span class="pill v">LLM</span></h3>
+        <p>Rank items into a top-5, write each "so-what" / recommended action, and produce the brief in a fixed JSON schema — grounded only in retrieved data.</p>
+        <div class="io"><b>In:</b> scores + news + opp facts · <b>Out:</b> <code>brief.json</code> (validated)</div>
+        <div class="guard">Guardrail: grounded generation only — the model may not invent deals, numbers, or contacts. Output is schema-validated; failures fall back to deterministic text.</div>
+      </div>
+
+      <div class="wf">
+        <h3>④ Delivery <span class="pill b">integration</span></h3>
+        <p>Render the concise brief into Slack Block Kit and post it; persist the full brief for the dashboard read-API.</p>
+        <div class="io"><b>In:</b> <code>brief.json</code> · <b>Out:</b> Slack message + stored record</div>
+        <div class="guard">Guardrail: idempotent — re-running a day doesn't double-post. Delivery never mutates source systems.</div>
+      </div>
+    </section>
+
+    <section id="data">
+      <h2><span class="num">05</span>Data model</h2>
+      <p class="sub">Minimal entities. The brief is a denormalized snapshot so the dashboard reads in one query.</p>
+<pre><code><span class="cm"># core entities (illustrative)</span>
+<span class="kw">Account</span>(id, name, domain, type, segment, owner_id)
+<span class="kw">Opportunity</span>(id, account_id, stage, amount, close_date,
+            last_activity_at, last_meeting_at, stage_entered_at)
+<span class="kw">Contact</span>(id, account_id, name, role, is_champion, last_engaged_at)
+<span class="kw">Signal</span>(id, account_id, type, headline, source_url, ts)   <span class="cm"># from news agent</span>
+<span class="kw">Score</span>(account_id, opp_id, risk, momentum, reasons[], run_date)
+<span class="kw">Brief</span>(rep_id, run_date, payload_json)                    <span class="cm"># denormalized snapshot</span></code></pre>
+    </section>
+
+    <section id="scoring">
+      <h2><span class="num">06</span>Scoring engine</h2>
+      <p>Two transparent, tunable scores. Deterministic so they're testable and an AE can trust them.</p>
+      <h3>Risk score (0–100)</h3>
+      <table>
+        <tr><th>Signal</th><th>Why</th><th>Weight</th></tr>
+        <tr><td>Days since last activity</td><td>Silence is the top slip predictor</td><td><code>0.30</code></td></tr>
+        <tr><td>Close date vs. stage</td><td>Near close but early stage = danger</td><td><code>0.25</code></td></tr>
+        <tr><td>Days stalled in stage</td><td>Stuck deals quietly die</td><td><code>0.20</code></td></tr>
+        <tr><td>Champion engagement decay</td><td>Opens/replies trending down</td><td><code>0.15</code></td></tr>
+        <tr><td>Single-threaded</td><td>One contact = one point of failure</td><td><code>0.10</code></td></tr>
+      </table>
+<pre><code><span class="kw">def</span> <span class="nm">risk_score</span>(opp):
+    s = (0.30*norm(opp.days_since_activity)
+       + 0.25*close_vs_stage(opp)
+       + 0.20*norm(opp.days_in_stage)
+       + 0.15*champion_decay(opp)
+       + 0.10*(1 <span class="kw">if</span> opp.single_threaded <span class="kw">else</span> 0))
+    <span class="kw">return</span> round(100 * s), reasons(opp)   <span class="cm"># always return the "why"</span></code></pre>
+      <p><strong>Daily priority</strong> ≈ <code>risk × deal_amount</code> (impact × urgency), capped at 5. <strong>Momentum</strong> is the change in the account fit/intent score vs. last week — surfaced as "heating up."</p>
+    </section>
+
+    <section id="news">
+      <h2><span class="num">07</span>News &amp; signals agent (Browserbase)</h2>
+      <p>This is the "browse the web for what changed" job. Browserbase provides managed headless Chromium sessions, so the agent can load real pages (news, press, LinkedIn, the account's own site) and extract structured events — then an LLM pass normalizes and attributes them.</p>
+      <h3>Flow</h3>
+      <ul>
+        <li><strong>Target</strong> — for each top account, build queries from <code>name + domain</code> (funding, exec changes, layoffs, launches, earnings).</li>
+        <li><strong>Browse</strong> — open a Browserbase session, run the searches, load result pages, capture text + URL.</li>
+        <li><strong>Extract</strong> — LLM turns raw page text into <code>{type, headline, source_url, ts}</code>; drop anything without a source.</li>
+        <li><strong>Match &amp; dedupe</strong> — link each signal to an account (and flag if it's an open opp); dedupe against the last N days.</li>
+        <li><strong>Persist</strong> — write to <code>Signal</code>; the brief highlights signals tied to open opportunities.</li>
+      </ul>
+      <div class="guard" style="margin-bottom:16px;">Guardrails: source URL required · respect robots/ToS and rate limits · cache results to avoid re-browsing · never store credentials in code.</div>
+      <p class="sub">Why a browser and not just a news API: coverage of long-tail e-commerce accounts and primary sources (the company's own site, a press page, a LinkedIn post) that news APIs miss. Browserbase handles the headless infra, proxies, and session scaling so the agent code stays small.</p>
+    </section>
+
+    <section id="llm">
+      <h2><span class="num">08</span>LLM layer &amp; prompt design</h2>
+      <p>The LLM does narrow, grounded jobs only: summarize a call/news item, write a "so-what," and phrase recommended actions. It never decides risk (that's deterministic) and never invents facts.</p>
+      <h3>Prompt structure (CLEAR, inside a strict schema)</h3>
+<pre><code><span class="cm">System:</span> You write a seller's morning brief. Use ONLY the JSON facts
+        provided. Never invent deals, numbers, names, or news.
+        If a field is missing, say so. Output must match the schema.
+
+<span class="cm">Facts:</span>  { opps:[...], scores:[...], signals:[...], calendar:[...] }
+
+<span class="cm">Task:</span>   Rank the top 5 by impact×urgency. For each, one-line reason
+        + one recommended action. Keep the Slack version &lt; 150 words.
+
+<span class="cm">Schema:</span> { priorities:[{account_id, reason, action}],
+          risk:[...], followups:[...], heating_up:[...] }</code></pre>
+      <ul>
+        <li><strong>Grounding</strong> — facts are injected; the model can't reach outside them. Unsupported claims are a test failure.</li>
+        <li><strong>Structured output</strong> — JSON schema-validated; on validation failure, fall back to deterministic templated text so a rep always gets a brief.</li>
+        <li><strong>Determinism</strong> — low temperature; the brief should be stable for the same inputs.</li>
+      </ul>
+    </section>
+
+    <section id="copilot">
+      <h2><span class="num">09</span>Conversational copilot (action agent)</h2>
+      <p>Everything above is read-only insight. The copilot is the layer that turns the brief into action — a chat assistant embedded in the dashboard that can draft a follow-up, update a deal, create a task, or book a meeting on the user's instruction. It is the only component that writes to source systems, and it does so <strong>as the signed-in user</strong>, with confirmation.</p>
+
+      <h3>How it works</h3>
+      <p>It's a tool-calling agent. Each action the company wants to allow is registered as a <em>tool</em> — a thin wrapper around one scoped API call (e.g. <code>update_opportunity</code>, <code>draft_email</code>, <code>create_task</code>). The user types a request; the agent plans, calls the needed tools, and returns results. Read tools run directly; write tools are proposed for confirmation first.</p>
+      <div class="diagram">
+        <svg viewBox="0 0 820 150" width="100%" xmlns="http://www.w3.org/2000/svg" font-family="ui-sans-serif,system-ui,sans-serif">
+          <defs><marker id="ar3" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#5fe6a4"/></marker></defs>
+          <g font-size="12" text-anchor="middle">
+            <rect x="12" y="52" width="120" height="46" rx="8" fill="#171b24" stroke="#20242f"/><text x="72" y="80" fill="#d4d9e4">User request</text>
+            <rect x="172" y="46" width="140" height="58" rx="9" fill="#13161e" stroke="#5fe6a4"/><text x="242" y="70" fill="#f1f3f8" font-size="12.5" font-weight="700">Copilot agent</text><text x="242" y="88" fill="#8e95a6" font-size="11">plan · tool-call</text>
+            <rect x="360" y="20" width="150" height="42" rx="8" fill="#171b24" stroke="#20242f"/><text x="435" y="46" fill="#8aeebd" font-size="11.5">read tools → auto</text>
+            <rect x="360" y="88" width="150" height="42" rx="8" fill="#171b24" stroke="#f2ad2e"/><text x="435" y="108" fill="#f4bd5c" font-size="11.5">write tools → confirm</text>
+            <rect x="556" y="52" width="150" height="46" rx="8" fill="#171b24" stroke="#20242f"/><text x="631" y="73" fill="#d4d9e4" font-size="11.5">Systems — as user</text><text x="631" y="89" fill="#8e95a6" font-size="10.5">SFDC · email · cal</text>
+            <rect x="724" y="52" width="84" height="46" rx="8" fill="#171b24" stroke="#20242f"/><text x="766" y="80" fill="#8e95a6" font-size="11">Audit log</text>
+          </g>
+          <g stroke="#5fe6a4" stroke-width="1.5">
+            <line x1="132" y1="75" x2="170" y2="75" marker-end="url(#ar3)"/>
+            <line x1="312" y1="62" x2="358" y2="42" marker-end="url(#ar3)"/>
+            <line x1="312" y1="86" x2="358" y2="106" marker-end="url(#ar3)"/>
+            <line x1="510" y1="42" x2="556" y2="66" marker-end="url(#ar3)"/>
+            <line x1="510" y1="108" x2="556" y2="84" marker-end="url(#ar3)"/>
+            <line x1="706" y1="75" x2="722" y2="75" marker-end="url(#ar3)"/>
+          </g>
+        </svg>
+        <div class="cap">Read tools execute directly; write/external tools are proposed and require user confirmation. All actions run as the user and are logged.</div>
+      </div>
+
+      <h3>Identity, SSO &amp; permissions</h3>
+      <p>The copilot never gets a broad service account. It acts <strong>on-behalf-of</strong> the signed-in user:</p>
+      <ul>
+        <li><strong>Authentication via your IdP</strong> — the user signs in through the company's existing SSO (Okta / Entra, SAML or OIDC). The app receives a per-user, delegated token (OAuth 2.0 on-behalf-of / token exchange).</li>
+        <li><strong>Authorization is inherited</strong> — every tool call uses that user's token, so the agent can do <em>only what the user can already do</em>. Existing CRM profiles, field-level security, and RBAC apply unchanged. No privilege escalation.</li>
+        <li><strong>Least-privilege scopes</strong> — the OAuth app requests only the scopes the registered tools need; anything outside the tool registry is simply not callable.</li>
+        <li><strong>No standing access</strong> — tokens are short-lived and refreshed; the agent holds no long-lived credentials.</li>
+      </ul>
+
+      <h3>Safety &amp; governance</h3>
+      <ul>
+        <li><strong>Human-in-the-loop writes</strong> — every write or external action (CRM update, email send, calendar change) is shown as a proposed action the user approves in the chat. Drafts are never sent automatically; irreversible or bulk actions always confirm.</li>
+        <li><strong>Full audit trail</strong> — every tool call is logged with user, action, parameters, and before/after state, attributable to the individual for SOC 2 / security review.</li>
+        <li><strong>Data boundary</strong> — runs through an enterprise LLM endpoint (no training on company data); only the minimum context needed is sent; DLP and retention policies apply.</li>
+        <li><strong>Guardrails</strong> — an allow-list of tools, rate limits, and confirmation gates mean the worst case is a proposed action the user declines — not an unintended change.</li>
+      </ul>
+      <div class="note">Net: the copilot sits <strong>inside</strong> the existing security posture. Identity comes from your SSO, authorization from your existing RBAC, and every change is user-approved and logged — the same controls that govern the user doing it by hand.</div>
+    </section>
+
+    <section id="apis">
+      <h2><span class="num">10</span>Integrations &amp; APIs</h2>
+      <table>
+        <tr><th>System</th><th>API</th><th>Scope</th><th>Use</th></tr>
+        <tr><td>Salesforce</td><td>REST / Bulk / Composite</td><td><span class="pill a">read</span> + <span class="pill m">write (copilot)</span></td><td>Opps, activities, contacts; writes only via copilot, as user</td></tr>
+        <tr><td>Calendar</td><td>Google Calendar / Graph</td><td><span class="pill a">read</span> + <span class="pill m">write (copilot)</span></td><td>Today's meetings; booking via copilot</td></tr>
+        <tr><td>Enrichment</td><td>ZoomInfo Enrich</td><td><span class="pill a">read</span></td><td>Firmographics, contact roles</td></tr>
+        <tr><td>Web / news</td><td>Browserbase Sessions</td><td><span class="pill a">read</span></td><td>Headless browsing for signals</td></tr>
+        <tr><td>Identity</td><td>Okta / Entra (SAML/OIDC)</td><td><span class="pill b">SSO</span></td><td>User auth + on-behalf-of tokens</td></tr>
+        <tr><td>LLM</td><td>Claude / OpenAI (enterprise)</td><td>—</td><td>Brief assembly + copilot reasoning (no-train)</td></tr>
+        <tr><td>Slack</td><td>Web API · Block Kit</td><td><span class="pill b">chat:write</span></td><td>Post the morning brief</td></tr>
+      </table>
+      <div class="note">The background daily agent uses read-only scopes. Write scopes exist only for copilot tools and are exercised with the user's delegated token, under confirmation.</div>
+    </section>
+
+    <section id="stack">
+      <h2><span class="num">11</span>Recommended stack &amp; hosting</h2>
+      <table>
+        <tr><th>Layer</th><th>Recommended</th><th>Low-code alternative</th></tr>
+        <tr><td>Orchestration</td><td>Python worker + scheduler (Railway cron / Cloud Scheduler)</td><td>n8n or Make (visual workflow)</td></tr>
+        <tr><td>Services</td><td>FastAPI (Python) or a small Node service</td><td>n8n function nodes</td></tr>
+        <tr><td>Copilot</td><td>Tool-calling agent (Agent SDK) behind an auth'd endpoint</td><td>—</td></tr>
+        <tr><td>Store</td><td>Postgres</td><td>Airtable (prototype only)</td></tr>
+        <tr><td>Dashboard</td><td>Static SPA reading a JSON endpoint</td><td>Retool</td></tr>
+        <tr><td>Hosting</td><td>Railway / Render / Fly</td><td>—</td></tr>
+      </table>
+      <p class="sub">Recommendation: start the prototype in <strong>n8n</strong> to wire sources fast and prove the flow visually, then port the scoring + assembly to a small Python service once the logic stabilizes. The browser agent, LLM, and copilot live behind their own endpoints either way.</p>
+    </section>
+
+    <section id="eval">
+      <h2><span class="num">12</span>Eval &amp; testing</h2>
+      <ul>
+        <li><strong>Scoring (unit)</strong> — deterministic, so assert exact outputs: a deal closing in 5 days with 21 days no activity must rank #1; a big quiet deal outranks a small one at equal risk.</li>
+        <li><strong>Rules</strong> — no-touch-7d and no-meeting-21d must appear on the watchlist; closed-lost/suppressed must never appear.</li>
+        <li><strong>LLM (golden set)</strong> — fixed fact sets with expected briefs; grade relevance, ordering, and reason clarity; assert no unsupported claims.</li>
+        <li><strong>News</strong> — every signal has a source URL; an item without one is dropped.</li>
+        <li><strong>Copilot</strong> — every write tool requires confirmation in tests; the agent never calls a tool outside the registry; permission errors surface cleanly.</li>
+        <li><strong>Guardrails</strong> — fuzz with missing/edge data; the brief must degrade gracefully, never crash or fabricate.</li>
+      </ul>
+      <p>Run the eval suite on every change to scoring, prompts, or the tool registry; treat a regression as a blocker.</p>
+    </section>
+
+    <section id="sec">
+      <h2><span class="num">13</span>Guardrails &amp; security</h2>
+      <ul>
+        <li><strong>Least privilege</strong> — read-only scopes for the daily agent; write scopes only on copilot tools, exercised as the user.</li>
+        <li><strong>Identity from SSO</strong> — auth via the company IdP; on-behalf-of tokens; no standing service-account writes.</li>
+        <li><strong>Secrets</strong> — in a secret manager / env, never in code or the repo.</li>
+        <li><strong>Grounding</strong> — LLM output restricted to injected facts; sources required for news; schema validation with deterministic fallback.</li>
+        <li><strong>Human-in-the-loop</strong> — all writes/sends are user-approved; nothing autonomous touches customers or the calendar.</li>
+        <li><strong>Auditability</strong> — every flag traces to a record or source URL; every copilot action is logged and attributable.</li>
+        <li><strong>Data handling</strong> — minimal PII, short retention, enterprise LLM (no-train), respect suppression / do-not-contact.</li>
+      </ul>
+    </section>
+
+    <section id="phases">
+      <h2><span class="num">14</span>Build phases &amp; timeline</h2>
+      <table>
+        <tr><th>Phase</th><th>Deliverable</th><th>Rough effort</th></tr>
+        <tr><td><span class="pill a">A — Mock</span></td><td>Dashboard + Slack mock on fake data (done)</td><td>complete</td></tr>
+        <tr><td><span class="pill b">B — Scripted</span></td><td>Scoring engine on a CSV export → printed brief</td><td>~3–5 days</td></tr>
+        <tr><td><span class="pill v">C — One source</span></td><td>Live Salesforce read → Slack brief for one rep</td><td>~1 week</td></tr>
+        <tr><td><span class="pill m">D — Agents</span></td><td>News agent + LLM assembly + dashboard read-API</td><td>~1–2 weeks</td></tr>
+        <tr><td><span class="pill v">E — Copilot</span></td><td>SSO + tool registry + confirm/audit for write actions</td><td>~1–2 weeks</td></tr>
+        <tr><td><span class="pill a">F — Pilot</span></td><td>5–8 reps, tune weights, instrument metrics</td><td>~2–3 weeks</td></tr>
+      </table>
+      <p class="sub">Each phase is independently demoable, so stakeholders see progress continuously and the program can stop or adjust at any boundary. Total to a tuned pilot: roughly 8–10 weeks with one engineer plus a GTM/RevOps lead driving the cross-functional pieces (data access, SSO + Slack app approval, pilot reps).</p>
+
+      <div class="foot">Morning Brief — technical overview · prepared by Taylor · pairs with the live dashboard mock and the design spec.</div>
+    </section>
+
+  </main>
+</div>
+</body>
+</html>
