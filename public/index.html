@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>GTM Agent Library — designed by Taylor</title>
+<meta name="description" content="A library of revenue-team AI agents, designed for impact and measured by ROI. Featuring the Morning Brief seller daily agent." />
+<style>
+  :root{
+    --bg:#ffffff; --soft:#f6f6f9; --ink:#15161c; --muted:#5c6172; --line:#e7e8ee;
+    --accent:#4f46e5; --accent-soft:#eef0fe; --accent-ink:#3730a3;
+    --danger:#dc2626; --danger-soft:#fdecec; --danger-ink:#991b1b;
+    --amber:#b45309; --amber-soft:#fef3e2;
+    --green:#0f7a4d; --green-soft:#e6f6ee;
+    --radius:14px; --radius-sm:10px;
+    --maxw:1080px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.6; -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit;}
+  .wrap{max-width:var(--maxw); margin:0 auto; padding:0 24px;}
+  .eyebrow{font-size:13px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--accent); margin:0 0 10px;}
+  h1,h2,h3{line-height:1.2; letter-spacing:-.01em;}
+
+  /* Nav */
+  nav{position:sticky; top:0; z-index:20; background:rgba(255,255,255,.88); backdrop-filter:blur(8px); border-bottom:1px solid var(--line);}
+  nav .wrap{display:flex; align-items:center; justify-content:space-between; height:60px;}
+  .brand{display:flex; align-items:center; gap:10px; font-weight:700; font-size:15px;}
+  .brand .dot{width:26px; height:26px; border-radius:8px; background:var(--accent); color:#fff; display:flex; align-items:center; justify-content:center; font-size:15px;}
+  .navlinks{display:flex; gap:26px; font-size:14px; color:var(--muted);}
+  .navlinks a{text-decoration:none;}
+  .navlinks a:hover{color:var(--ink);}
+  @media(max-width:720px){ .navlinks{display:none;} }
+
+  /* Hero */
+  .hero{padding:84px 0 64px; background:linear-gradient(180deg,#f7f7fb 0%,#ffffff 100%);}
+  .hero h1{font-size:46px; margin:0 0 20px; max-width:840px;}
+  .hero p.lede{font-size:19px; color:var(--muted); max-width:680px; margin:0 0 28px;}
+  .pill{display:inline-block; background:var(--accent-soft); color:var(--accent-ink); font-size:13px; font-weight:600; padding:6px 14px; border-radius:999px; margin-bottom:22px;}
+  .reframe{margin-top:30px; padding:18px 22px; border-left:4px solid var(--accent); background:var(--soft); border-radius:0 var(--radius-sm) var(--radius-sm) 0; max-width:720px; font-size:16px;}
+  @media(max-width:720px){ .hero h1{font-size:34px;} }
+
+  /* Section */
+  section{padding:64px 0; border-top:1px solid var(--line);}
+  section h2{font-size:30px; margin:0 0 14px;}
+  .sub{font-size:17px; color:var(--muted); max-width:680px; margin:0 0 36px;}
+
+  /* Operating model strip */
+  .model{display:flex; flex-wrap:wrap; gap:10px; align-items:center;}
+  .model .step{flex:1; min-width:120px; background:#fff; border:1px solid var(--line); border-radius:var(--radius-sm); padding:16px; text-align:center;}
+  .model .step b{display:block; font-size:15px;}
+  .model .step span{font-size:12.5px; color:var(--muted);}
+  .model .arrow{color:var(--accent); font-weight:700;}
+  @media(max-width:720px){ .model .arrow{display:none;} }
+
+  /* Featured */
+  .featured-head{display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:6px;}
+  .tag{font-size:12px; font-weight:700; padding:4px 10px; border-radius:999px; background:var(--accent-soft); color:var(--accent-ink);}
+  .tag.live{background:var(--green-soft); color:var(--green);}
+
+  /* problem/how grid */
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:24px;}
+  @media(max-width:820px){ .grid2{grid-template-columns:1fr;} }
+  .card{background:#fff; border:1px solid var(--line); border-radius:var(--radius); padding:24px;}
+  .card h3{font-size:18px; margin:0 0 10px;}
+  .card p{margin:0 0 10px; color:#33363f; font-size:15px;}
+  .card.soft{background:var(--soft);}
+
+  /* steps */
+  ol.steps{margin:0; padding:0; list-style:none; counter-reset:s;}
+  ol.steps li{counter-increment:s; position:relative; padding:10px 0 10px 38px; border-bottom:1px solid var(--line); font-size:15px;}
+  ol.steps li:last-child{border-bottom:none;}
+  ol.steps li::before{content:counter(s); position:absolute; left:0; top:9px; width:24px; height:24px; border-radius:50%; background:var(--accent-soft); color:var(--accent-ink); font-size:13px; font-weight:700; display:flex; align-items:center; justify-content:center;}
+
+  /* mockups */
+  .mocks{display:grid; grid-template-columns:1fr 1fr; gap:24px; align-items:start;}
+  @media(max-width:820px){ .mocks{grid-template-columns:1fr;} }
+  .mock-label{font-size:13px; font-weight:700; color:var(--muted); margin:0 0 10px; text-transform:uppercase; letter-spacing:.05em;}
+  .surface{background:var(--soft); border-radius:var(--radius); padding:18px;}
+
+  /* slack */
+  .slack{background:#fff; border:1px solid var(--line); border-radius:12px; padding:16px 18px;}
+  .slack .hd{display:flex; align-items:center; gap:10px; margin-bottom:12px;}
+  .slack .ava{width:36px; height:36px; border-radius:9px; background:var(--accent-soft); color:var(--accent-ink); display:flex; align-items:center; justify-content:center; font-size:18px;}
+  .slack .name{font-weight:700; font-size:14px;}
+  .slack .app{font-size:10px; background:var(--soft); color:var(--muted); padding:1px 6px; border-radius:4px; margin-left:6px;}
+  .slack .time{font-size:12px; color:#9aa0ad; margin-left:6px;}
+  .blk{border-left:3px solid var(--line); padding:2px 0 2px 12px; margin:12px 0;}
+  .blk .lh{font-size:11.5px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; margin:0 0 6px;}
+  .blk p{margin:0 0 5px; font-size:13.5px;}
+  .blk.risk{border-color:var(--danger);} .blk.risk .lh{color:var(--danger-ink);}
+  .blk.fu{border-color:#c9ccd6;} .blk.fu .lh{color:var(--muted);}
+  .blk.mtg{border-color:var(--accent);} .blk.mtg .lh{color:var(--accent-ink);}
+  .why{color:#9aa0ad;}
+  .insight{background:var(--soft); border-radius:9px; padding:10px 12px; font-size:13px; color:#444;}
+
+  /* dashboard card */
+  .dash{background:#fff; border:1px solid var(--line); border-radius:12px; padding:18px;}
+  .dash .top{display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;}
+  .dash .top b{font-size:16px;}
+  .dash .top small{color:var(--muted); display:block; font-size:12px;}
+  .kpis{display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:16px;}
+  .kpi{background:var(--soft); border-radius:9px; padding:9px 10px;}
+  .kpi small{font-size:11.5px; color:var(--muted); display:block;}
+  .kpi b{font-size:19px;}
+  .kpi b.r{color:var(--danger);}
+  .row{display:flex; gap:10px; align-items:flex-start; border:1px solid var(--line); border-radius:9px; padding:9px 11px; margin-bottom:7px;}
+  .row .n{font-weight:700; color:#9aa0ad; font-size:12px; min-width:12px;}
+  .row .main{flex:1;} .row .main p{margin:0; font-size:13px;} .row .main .mini{color:#9aa0ad; font-size:11.5px;}
+  .chip{font-size:10.5px; padding:2px 7px; border-radius:6px; white-space:nowrap;}
+  .chip.r{background:var(--danger-soft); color:var(--danger-ink);}
+  .chip.f{background:var(--soft); color:var(--muted);}
+  .chip.m{background:var(--accent-soft); color:var(--accent-ink);}
+
+  /* scoring table */
+  table{width:100%; border-collapse:collapse; font-size:14.5px;}
+  th,td{text-align:left; padding:11px 12px; border-bottom:1px solid var(--line);}
+  th{font-size:12.5px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted);}
+  td.w{text-align:right; font-weight:700; color:var(--accent-ink); white-space:nowrap;}
+
+  /* ROI stats */
+  .stats{display:grid; grid-template-columns:repeat(4,1fr); gap:16px;}
+  @media(max-width:820px){ .stats{grid-template-columns:repeat(2,1fr);} }
+  .stat{background:var(--soft); border-radius:var(--radius); padding:22px;}
+  .stat .big{font-size:30px; font-weight:800; letter-spacing:-.02em;}
+  .stat .lbl{font-size:13.5px; color:var(--muted); margin-top:4px;}
+  .note{font-size:13px; color:var(--muted); margin-top:18px; max-width:720px;}
+
+  /* library cards */
+  .lib{display:grid; grid-template-columns:repeat(2,1fr); gap:20px;}
+  @media(max-width:820px){ .lib{grid-template-columns:1fr;} }
+  .libcard{border:1px solid var(--line); border-radius:var(--radius); padding:22px; transition:border-color .15s;}
+  .libcard:hover{border-color:var(--accent);}
+  .libcard .ic{width:38px; height:38px; border-radius:10px; background:var(--accent-soft); color:var(--accent-ink); display:flex; align-items:center; justify-content:center; font-size:20px; margin-bottom:12px;}
+  .libcard h3{font-size:17px; margin:0 0 6px;}
+  .libcard p{font-size:14px; color:var(--muted); margin:0 0 12px;}
+  .libcard .roi{font-size:13px; font-weight:600; color:var(--green);}
+
+  footer{padding:48px 0; border-top:1px solid var(--line); color:var(--muted); font-size:14px;}
+  footer .wrap{display:flex; justify-content:space-between; flex-wrap:wrap; gap:12px;}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <div class="brand"><span class="dot">◆</span> GTM Agent Library</div>
+    <div class="navlinks">
+      <a href="#model">Method</a>
+      <a href="#morning">Morning Brief</a>
+      <a href="#roi">ROI</a>
+      <a href="#library">The library</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <span class="pill">Revenue-team AI agents · designed for impact, measured by ROI</span>
+    <h1>Agents that give sellers their time back — and protect the pipeline.</h1>
+    <p class="lede">A library of revenue workflows redesigned as AI agents. Each one starts from an expensive, broken workflow, is designed as a system with guardrails and tests, and is measured by the hours and revenue it returns.</p>
+    <div class="reframe"><b>The agent is the evidence.</b> The real work is the diagnosis, the design, the guardrails, and the ROI — proof of someone who can find the bottleneck, design the fix, and quantify what it's worth.</div>
+  </div>
+</header>
+
+<section id="model">
+  <div class="wrap">
+    <p class="eyebrow">The method</p>
+    <h2>Every agent is built on one loop.</h2>
+    <p class="sub">Not a single clever prompt — a repeatable loop that makes the agent trustworthy enough for a revenue team to rely on.</p>
+    <div class="model">
+      <div class="step"><b>Job</b><span>one sentence it owns</span></div>
+      <span class="arrow">→</span>
+      <div class="step"><b>Tools</b><span>minimum data &amp; actions</span></div>
+      <span class="arrow">→</span>
+      <div class="step"><b>Guardrails</b><span>what it must never do</span></div>
+      <span class="arrow">→</span>
+      <div class="step"><b>Eval</b><span>graded vs. test cases</span></div>
+      <span class="arrow">→</span>
+      <div class="step"><b>Iterate</b><span>fix &amp; re-run</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="morning">
+  <div class="wrap">
+    <div class="featured-head">
+      <p class="eyebrow" style="margin:0;">Featured agent</p>
+      <span class="tag">Deep-dive</span>
+      <span class="tag live">Read-only · safe to ship first</span>
+    </div>
+    <h2>The Morning Brief.</h2>
+    <p class="sub">Every morning, before the rep logs in, a ranked brief of exactly what to do today — top priorities, deals at risk, follow-ups due, and one territory insight — delivered to Slack, every flag explained.</p>
+
+    <div class="grid2" style="margin-bottom:36px;">
+      <div class="card soft">
+        <h3>The problem</h3>
+        <p>Sellers lose the first 30–45 minutes of every day deciding what to do — and often decide badly, chasing the loud deal instead of the slipping one.</p>
+        <p>Worse, deals die silently: nobody notices a champion went quiet until it's too late, and managers only see the risk at the QBR.</p>
+      </div>
+      <div class="card">
+        <h3>How it works</h3>
+        <ol class="steps">
+          <li>Pull each rep's open deals, activity, and today's calendar.</li>
+          <li>Score every deal for risk; flag the ones that are slipping.</li>
+          <li>Surface follow-ups due and prep for today's meetings.</li>
+          <li>Rank into a top 5 — capped, explained, actionable.</li>
+          <li>Post to Slack at 7:00am, before the day starts.</li>
+        </ol>
+      </div>
+    </div>
+
+    <p class="mock-label">What the rep receives</p>
+    <div class="mocks">
+      <div>
+        <p class="mock-label" style="font-size:12px;">Slack DM</p>
+        <div class="surface">
+          <div class="slack">
+            <div class="hd"><div class="ava">☀</div><div><span class="name">Morning Brief</span><span class="app">APP</span><span class="time">7:00 AM</span></div></div>
+            <p style="margin:0 0 2px; font-size:14px;">Morning, Jordan. Here's your day — 5 things that matter most.</p>
+            <p style="margin:0; font-size:12.5px; color:var(--muted);">Tue, Jun 16 · 3 meetings · $120K in flight</p>
+            <div class="blk risk">
+              <p class="lh">⚠ At risk — act today</p>
+              <p><b>1. Acme Corp — $65K</b> · closes in 5 days, no activity 21 days <span class="why">→ call the champion</span></p>
+              <p><b>2. Northwind — $40K</b> · stalled 18 days, single-threaded <span class="why">→ multi-thread</span></p>
+            </div>
+            <div class="blk fu">
+              <p class="lh">Follow-ups due</p>
+              <p><b>3. Globex</b> · you promised pricing today <span class="why">→ send proposal</span></p>
+            </div>
+            <div class="blk mtg">
+              <p class="lh">Prep for today</p>
+              <p><b>4. 10:00 Initech demo</b> · asked about SSO <span class="why">→ lead with security</span></p>
+              <p><b>5. 2:00 Umbrella</b> · renewal in 60 days <span class="why">→ tee up expansion</span></p>
+            </div>
+            <div class="insight">💡 <b>Territory insight:</b> 3 accounts opened your last email but didn't reply — worth a nudge.</div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <p class="mock-label" style="font-size:12px;">Dashboard card</p>
+        <div class="surface">
+          <div class="dash">
+            <div class="top"><div><b>Good morning, Jordan</b><small>Tue, Jun 16 · West Enterprise</small></div><small>7:00 AM</small></div>
+            <div class="kpis">
+              <div class="kpi"><small>At risk</small><b class="r">2</b></div>
+              <div class="kpi"><small>In flight</small><b>$120K</b></div>
+              <div class="kpi"><small>Meetings</small><b>3</b></div>
+              <div class="kpi"><small>Follow-ups</small><b>1</b></div>
+            </div>
+            <div class="row"><span class="n">1</span><div class="main"><p><b>Acme Corp · $65K</b> — closes 5 days, quiet 21</p><p class="mini">Call the champion</p></div><span class="chip r">At risk</span></div>
+            <div class="row"><span class="n">2</span><div class="main"><p><b>Northwind · $40K</b> — stalled 18 days</p><p class="mini">Multi-thread to econ buyer</p></div><span class="chip r">At risk</span></div>
+            <div class="row"><span class="n">3</span><div class="main"><p><b>Globex</b> — pricing promised today</p><p class="mini">Send the proposal</p></div><span class="chip f">Follow-up</span></div>
+            <div class="row"><span class="n">4</span><div class="main"><p><b>10:00 · Initech demo</b> — asked re: SSO</p><p class="mini">Lead with security</p></div><span class="chip m">Meeting</span></div>
+            <div class="row"><span class="n">5</span><div class="main"><p><b>2:00 · Umbrella</b> — renewal in 60 days</p><p class="mini">Tee up expansion</p></div><span class="chip m">Meeting</span></div>
+            <div class="insight" style="margin-top:10px;">💡 <b>Territory insight:</b> 3 accounts opened your last email, none replied.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:44px;">
+      <h3 style="font-size:20px; margin:0 0 6px;">More than a to-do list: a daily command center.</h3>
+      <p class="sub" style="margin-bottom:22px;">The Slack ping stays short. Behind it, the full brief carries four modules that answer not just <em>what</em> to do, but who to contact, what's changed, and <em>when</em> to do it.</p>
+      <div class="grid2">
+
+        <div class="card">
+          <h3 style="display:flex; align-items:center; gap:8px;">Risk watchlist <span class="why" style="font-size:12px; font-weight:400;">rule-based, not a black box</span></h3>
+          <div style="display:flex; gap:8px; margin:6px 0 12px;">
+            <span class="chip r">No touch · 7 days</span>
+            <span class="chip r">No meeting · 21 days</span>
+          </div>
+          <div class="row"><div class="main"><p><b>Stark Industries · $52K</b></p><p class="mini">no touch in 9 days</p></div><span class="chip r">at risk</span></div>
+          <div class="row" style="margin-bottom:0;"><div class="main"><p><b>Wayne Enterprises · $88K</b></p><p class="mini">no meeting in 24 days</p></div><span class="chip r">at risk</span></div>
+        </div>
+
+        <div class="card">
+          <h3>People to follow up with</h3>
+          <div class="row"><div class="main"><p><b>Dana Lee</b> · Champion @ Acme</p><p class="mini">went quiet — re-engage</p></div></div>
+          <div class="row"><div class="main"><p><b>Raj Patel</b> · VP Eng @ Globex</p><p class="mini">pricing promised today</p></div></div>
+          <div style="display:flex; align-items:center; gap:10px; margin:12px 0;">
+            <span style="background:var(--accent); color:#fff; font-size:13px; font-weight:600; padding:7px 14px; border-radius:8px;">⤴ Export to Outreach</span>
+            <span class="why" style="font-size:12.5px;">one click → a sequence</span>
+          </div>
+          <div style="background:var(--amber-soft); border-radius:9px; padding:10px 12px; font-size:13px; color:#5b3b07;"><b>Multi-thread:</b> Northwind is single-threaded → also engage the CFO (economic buyer) and a security lead.</div>
+        </div>
+
+        <div class="card">
+          <h3>Territory insights</h3>
+          <p class="sub" style="font-size:13.5px; margin:0 0 12px;">External news on your top accounts — every item sourced.</p>
+          <div style="font-size:14px;">
+            <p style="margin:0 0 9px;">📰 <b>Acme Corp</b> named a new CRO <span class="why">→ congratulate + re-confirm priorities</span> <span class="chip f">source</span></p>
+            <p style="margin:0 0 9px;">📈 <b>Initech</b> Q2 earnings beat, raised guidance <span class="why">→ expansion opening</span> <span class="chip f">source</span></p>
+            <p style="margin:0;">⚠ <b>Umbrella</b> cut 12% of its support team <span class="why">→ renewal risk to watch</span> <span class="chip f">source</span></p>
+          </div>
+        </div>
+
+        <div class="card soft">
+          <h3 style="display:flex; align-items:center; gap:8px;">Action plan <span class="why" style="font-size:12px; font-weight:400;">your day, time-blocked</span></h3>
+          <div style="font-size:13.5px; line-height:1.5;">
+            <div style="display:flex; gap:12px; padding:7px 0; border-bottom:1px solid var(--line);"><b style="min-width:54px; color:var(--muted);">8:30</b><span>Prospecting block — top of funnel</span></div>
+            <div style="display:flex; gap:12px; padding:7px 0; border-bottom:1px solid var(--line);"><b style="min-width:54px; color:var(--muted);">9:30</b><span>Deal prep — Acme + Northwind</span></div>
+            <div style="display:flex; gap:12px; padding:7px 0; border-bottom:1px solid var(--line);"><b style="min-width:54px; color:var(--muted);">9:45</b><span>Prep: Initech demo</span></div>
+            <div style="display:flex; gap:12px; padding:7px 0; border-bottom:1px solid var(--line);"><b style="min-width:54px; color:var(--accent-ink);">10:00</b><span style="color:var(--accent-ink);">Initech demo (meeting)</span></div>
+            <div style="display:flex; gap:12px; padding:7px 0; border-bottom:1px solid var(--line);"><b style="min-width:54px; color:var(--muted);">1:30</b><span>Follow-ups + exports</span></div>
+            <div style="display:flex; gap:12px; padding:7px 0; border-bottom:1px solid var(--line);"><b style="min-width:54px; color:var(--accent-ink);">2:00</b><span style="color:var(--accent-ink);">Umbrella check-in (meeting)</span></div>
+            <div style="display:flex; gap:12px; padding:7px 0;"><b style="min-width:54px; color:var(--muted);">4:00</b><span>Internal / admin — contained</span></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div style="margin-top:44px;">
+      <h3 style="font-size:20px; margin:0 0 6px;">The part most demos skip: how it decides what's "at risk".</h3>
+      <p class="sub" style="margin-bottom:20px;">A transparent, tunable risk score — not a black box. This is what an engineer builds from and an interviewer can't poke holes in.</p>
+      <div class="card" style="padding:6px 12px;">
+        <table>
+          <tr><th>Signal</th><th>Why it matters</th><th style="text-align:right;">Weight</th></tr>
+          <tr><td>Days since last activity</td><td>Silence is the #1 slip predictor</td><td class="w">30%</td></tr>
+          <tr><td>Close date vs. stage</td><td>Near close but early stage = danger</td><td class="w">25%</td></tr>
+          <tr><td>Days stalled in stage</td><td>Stuck deals quietly die</td><td class="w">20%</td></tr>
+          <tr><td>Champion engagement decay</td><td>Opens / replies trending down</td><td class="w">15%</td></tr>
+          <tr><td>Single-threaded</td><td>One contact = one point of failure</td><td class="w">10%</td></tr>
+        </table>
+      </div>
+      <p class="note">Scores normalize 0–100 and are weighted by deal size, so a big quiet deal outranks a small one. Final daily priority ≈ impact × urgency, capped at five items.</p>
+    </div>
+  </div>
+</section>
+
+<section id="roi">
+  <div class="wrap">
+    <p class="eyebrow">What it's worth</p>
+    <h2>Measured, not hand-waved.</h2>
+    <p class="sub">Illustrative figures for a 40-rep team using conservative, fully-stated assumptions. Swap in a company's real numbers and the model holds.</p>
+    <div class="stats">
+      <div class="stat"><div class="big">~3,800</div><div class="lbl">selling hours returned / year</div></div>
+      <div class="stat"><div class="big">~$345K</div><div class="lbl">of selling capacity created</div></div>
+      <div class="stat"><div class="big">~$350K</div><div class="lbl">revenue protected from slippage</div></div>
+      <div class="stat"><div class="big">&lt;1 qtr</div><div class="lbl">payback period</div></div>
+    </div>
+    <p class="note"><b>Assumptions:</b> recovers 25 of 40 daily planning minutes · 40 reps · 230 working days · $90 loaded hourly cost · $40K ACV · 22% win rate · 1 saved deal/rep/year. Time is framed as capacity that converts to pipeline, not headcount savings.</p>
+  </div>
+</section>
+
+<section id="library">
+  <div class="wrap">
+    <p class="eyebrow">The rest of the library</p>
+    <h2>Four more agents, same method.</h2>
+    <p class="sub">Each designed to the same standard — diagnosis, guardrails, evals, and a defensible ROI.</p>
+    <div class="lib">
+      <div class="libcard">
+        <div class="ic">⇄</div>
+        <h3>Lead Routing</h3>
+        <p>Enrich, score against ICP, and route every inbound lead to the right rep in seconds — no lead left behind.</p>
+        <div class="roi">~$270K–$470K influenced pipeline / year</div>
+      </div>
+      <div class="libcard">
+        <div class="ic">↺</div>
+        <h3>Post-Call → Salesforce</h3>
+        <p>Turn each call transcript into a rep-approved CRM update with next steps — a 10-minute chore becomes a 20-second confirm.</p>
+        <div class="roi">~3,680 hours + cleaner forecasting / year</div>
+      </div>
+      <div class="libcard">
+        <div class="ic">✎</div>
+        <h3>Messaging / ICP</h3>
+        <p>Assemble persona, pain, and matching value into a tailored outreach sequence the rep reviews and sends.</p>
+        <div class="roi">~$300K–$600K influenced pipeline / year</div>
+      </div>
+      <div class="libcard">
+        <div class="ic">?</div>
+        <h3>Internal AMA Bot</h3>
+        <p>Answer reps' questions instantly in Slack, grounded only in approved docs, with a source link every time.</p>
+        <div class="roi">~4,600 hours recovered / year</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div>GTM Agent Library — designed by Taylor</div>
+    <div>Built to show, not tell: diagnose → design → guardrail → test → quantify.</div>
+  </div>
+</footer>
+
+</body>
+</html>
