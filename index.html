@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Morning Brief · Acme Sales</title>
+<meta name="description" content="Morning Brief — the daily command center for Acme account executives." />
+<style>
+  :root{
+    --bg:#0a0b0f; --panel:#14161d; --panel2:#181b23; --hover:#1d212b;
+    --ink:#f4f5f8; --muted:#9499a8; --faint:#646b7c;
+    --line:#23262f; --line2:#1b1e26;
+    --brand:#7c6cff; --brand-2:#9a8cff; --brand-soft:rgba(124,108,255,.16); --brand-ink:#b7adff;
+    --red:#ff5e54; --red-soft:rgba(255,94,84,.15); --red-ink:#ff968f;
+    --amber:#f2ad2e; --amber-soft:rgba(242,173,46,.15); --amber-ink:#f6c264;
+    --green:#33d684; --green-soft:rgba(51,214,132,.15); --green-ink:#6ee3a8;
+    --blue:#52a4ff; --blue-soft:rgba(82,164,255,.15); --blue-ink:#8cc1ff;
+    --r:14px; --r-sm:10px;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--bg); color:var(--ink); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; font-size:14px; line-height:1.5; -webkit-font-smoothing:antialiased;}
+  .mut{color:var(--muted);} .fnt{color:var(--faint);}
+  svg{display:block;}
+
+  .app{display:flex; min-height:100vh;}
+
+  /* sidebar */
+  .side{width:224px; flex-shrink:0; background:var(--panel); border-right:1px solid var(--line); display:flex; flex-direction:column; position:sticky; top:0; height:100vh;}
+  .side .brand{display:flex; align-items:center; gap:10px; font-weight:700; font-size:15px; padding:18px 18px 16px;}
+  .side .brand .mk{width:28px; height:28px; border-radius:8px; background:var(--brand); color:#fff; display:flex; align-items:center; justify-content:center; font-size:16px; font-weight:800;}
+  .nav{padding:6px 12px; display:flex; flex-direction:column; gap:2px;}
+  .nav a{display:flex; align-items:center; gap:11px; padding:9px 12px; border-radius:9px; color:var(--muted); text-decoration:none; font-size:13.5px; font-weight:500;}
+  .nav a svg{width:18px; height:18px; stroke:currentColor; fill:none; stroke-width:1.8;}
+  .nav a:hover{background:var(--hover); color:var(--ink);}
+  .nav a.on{background:var(--brand-soft); color:var(--brand-ink);}
+  .nav .sec{font-size:11px; text-transform:uppercase; letter-spacing:.07em; color:var(--faint); padding:14px 12px 6px;}
+  .side .me{margin-top:auto; border-top:1px solid var(--line); padding:14px 16px; display:flex; align-items:center; gap:10px;}
+  .side .me .ava{width:30px; height:30px; border-radius:50%; background:var(--brand-soft); color:var(--brand-ink); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:12px;}
+  .side .me .nm{font-size:13px; font-weight:600;} .side .me .rl{font-size:11.5px; color:var(--faint);}
+  @media(max-width:880px){ .side{width:62px;} .side .brand span, .nav a span, .nav .sec, .side .me div{display:none;} .side .brand{justify-content:center; padding:18px 0;} .nav a{justify-content:center;} .side .me{justify-content:center;} }
+
+  /* main */
+  .main{flex:1; min-width:0;}
+  .topbar{position:sticky; top:0; z-index:20; background:rgba(10,11,15,.82); backdrop-filter:blur(10px); border-bottom:1px solid var(--line); height:58px; display:flex; align-items:center; gap:16px; padding:0 24px;}
+  .search{flex:1; max-width:420px; background:var(--panel2); border:1px solid var(--line); border-radius:9px; height:34px; display:flex; align-items:center; padding:0 12px; color:var(--faint); font-size:13px; gap:8px;}
+  .tbright{margin-left:auto; display:flex; align-items:center; gap:16px; color:var(--muted); font-size:13px;}
+  .tbright .dot{width:7px; height:7px; border-radius:50%; background:var(--green); display:inline-block; margin-right:6px;}
+  @media(max-width:620px){ .search{display:none;} }
+
+  .content{padding:24px 26px 64px; max-width:1240px;}
+
+  .hello h1{font-size:24px; margin:0 0 4px; letter-spacing:-.02em;}
+  .hello p{margin:0 0 22px; color:var(--muted);}
+  .hello .badge{display:inline-block; background:var(--brand-soft); color:var(--brand-ink); font-size:12px; font-weight:600; padding:2px 10px; border-radius:999px; margin-left:6px;}
+
+  .kpis{display:grid; grid-template-columns:repeat(6,1fr); gap:12px; margin-bottom:22px;}
+  @media(max-width:1040px){ .kpis{grid-template-columns:repeat(3,1fr);} }
+  @media(max-width:560px){ .kpis{grid-template-columns:repeat(2,1fr);} }
+  .kpi{background:var(--panel); border:1px solid var(--line); border-radius:var(--r-sm); padding:13px 15px;}
+  .kpi .l{font-size:12px; color:var(--muted); margin-bottom:4px;}
+  .kpi .v{font-size:22px; font-weight:700; letter-spacing:-.02em;}
+  .kpi .v.r{color:var(--red);} .kpi .d{font-size:11.5px; color:var(--faint); margin-top:2px;}
+
+  .panel{background:var(--panel); border:1px solid var(--line); border-radius:var(--r); margin-bottom:20px;}
+  .ph{display:flex; align-items:center; justify-content:space-between; padding:15px 18px; border-bottom:1px solid var(--line2);}
+  .ph h2{font-size:15px; margin:0; letter-spacing:-.01em;}
+  .ph .meta{font-size:12px; color:var(--faint);}
+  .pb{padding:8px 18px 16px;}
+
+  /* heating up */
+  .heat{display:grid; grid-template-columns:repeat(4,1fr); gap:12px; padding:6px 18px 16px;}
+  @media(max-width:1040px){ .heat{grid-template-columns:repeat(2,1fr);} }
+  @media(max-width:560px){ .heat{grid-template-columns:1fr;} }
+  .hcard{background:var(--panel2); border:1px solid var(--line); border-radius:var(--r-sm); padding:14px;}
+  .hcard .hr{display:flex; align-items:center; justify-content:space-between; margin-bottom:9px;}
+  .hcard .nm{font-weight:600; font-size:13.5px;}
+  .htag{font-size:10px; font-weight:700; padding:2px 7px; border-radius:5px; letter-spacing:.02em;}
+  .htag.exp{background:var(--green-soft); color:var(--green-ink);}
+  .htag.new{background:var(--blue-soft); color:var(--blue-ink);}
+  .hcard .sc{display:flex; align-items:baseline; gap:9px; margin-bottom:7px;}
+  .hcard .sv{font-size:27px; font-weight:800; letter-spacing:-.02em; line-height:1;}
+  .delta{font-size:12px; font-weight:700; color:var(--green-ink); background:var(--green-soft); padding:2px 7px; border-radius:6px;}
+  .hcard .dv{font-size:12px; color:var(--muted); line-height:1.45;}
+  .hcard .hact{font-size:11.5px; color:var(--brand-ink); font-weight:600; margin-top:8px; display:inline-block;}
+
+  .cols{display:grid; grid-template-columns:1.7fr 1fr; gap:20px; align-items:start;}
+  @media(max-width:980px){ .cols{grid-template-columns:1fr;} }
+
+  .pri{display:flex; gap:13px; align-items:flex-start; padding:13px 0; border-bottom:1px solid var(--line2);}
+  .pri:last-child{border-bottom:none;}
+  .pri .rk{width:23px; height:23px; border-radius:7px; background:var(--panel2); color:var(--muted); font-size:12px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px;}
+  .pri .body{flex:1; min-width:0;}
+  .pri .ttl{font-weight:600;} .pri .ttl .amt{color:var(--muted); font-weight:600;}
+  .pri .rsn{color:var(--muted); font-size:13px; margin-top:2px;}
+  .pri .act{color:var(--brand-ink); font-size:12.5px; font-weight:600; margin-top:5px; display:inline-block;}
+  .chip{font-size:11px; font-weight:600; padding:2px 9px; border-radius:6px; white-space:nowrap; flex-shrink:0; margin-top:1px;}
+  .chip.r{background:var(--red-soft); color:var(--red-ink);}
+  .chip.f{background:var(--panel2); color:var(--muted);}
+  .chip.m{background:var(--blue-soft); color:var(--blue-ink);}
+  .chip.u{background:var(--green-soft); color:var(--green-ink);}
+
+  table{width:100%; border-collapse:collapse;}
+  .wl td{padding:11px 0; border-bottom:1px solid var(--line2); font-size:13.5px;}
+  .wl tr:last-child td{border-bottom:none;}
+  .wl .acct{font-weight:600;}
+  .wl .rule{color:var(--red-ink); font-size:12.5px;}
+  .wl .amt{text-align:right; font-weight:600; color:var(--muted); white-space:nowrap;}
+  .rules{display:flex; gap:8px; padding:0 18px 4px;}
+
+  .fu{display:flex; align-items:center; gap:12px; padding:11px 0; border-bottom:1px solid var(--line2);}
+  .fu:last-of-type{border-bottom:none;}
+  .fu .ci{width:30px; height:30px; border-radius:50%; background:var(--brand-soft); color:var(--brand-ink); font-size:11px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0;}
+  .fu .who{font-weight:600;} .fu .role{color:var(--muted); font-size:12.5px;}
+  .fu .rsn{margin-left:auto; color:var(--faint); font-size:12px; text-align:right;}
+  .btn{display:inline-flex; align-items:center; gap:7px; background:var(--brand); color:#fff; font-size:12.5px; font-weight:600; padding:9px 14px; border-radius:8px; border:none; cursor:pointer;}
+  .btnrow{display:flex; align-items:center; gap:11px; margin:14px 0 4px; flex-wrap:wrap;}
+  .mt{background:var(--amber-soft); border:1px solid rgba(242,173,46,.2); border-radius:var(--r-sm); padding:11px 13px; font-size:12.5px; color:var(--amber-ink); margin-top:12px;}
+
+  .tl .row{display:flex; gap:12px; padding:9px 0; border-bottom:1px solid var(--line2); font-size:13px;}
+  .tl .row:last-child{border-bottom:none;}
+  .tl .t{min-width:50px; font-weight:700; color:var(--muted); font-variant-numeric:tabular-nums;}
+  .tl .row.mtg .t{color:var(--blue-ink);} .tl .row.mtg span{color:var(--blue-ink); font-weight:600;}
+  .tl .tag{margin-left:auto; font-size:10.5px; color:var(--faint);}
+
+  .sig{padding:11px 0; border-bottom:1px solid var(--line2); font-size:13px;}
+  .sig:last-child{border-bottom:none;}
+  .sig .hd{font-weight:600;} .sig .so{color:var(--muted);}
+  .sig .src{font-size:10.5px; color:var(--brand-ink); background:var(--brand-soft); padding:1px 7px; border-radius:5px; margin-left:4px;}
+  .ic{font-style:normal; margin-right:6px;}
+
+  .foot{padding:6px 2px 0; color:var(--faint); font-size:12px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <aside class="side">
+    <div class="brand"><span class="mk">A</span><span>Acme Sales</span></div>
+    <nav class="nav">
+      <a class="on" href="#"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg><span>Morning Brief</span></a>
+      <a href="#"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span>Accounts</span></a>
+      <a href="#"><svg viewBox="0 0 24 24"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M8 16v-5"/><path d="M12 16V8"/><path d="M16 16v-7"/></svg><span>Pipeline</span></a>
+      <a href="#"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3 3-5 6-5s6 2 6 5"/><path d="M16 6a3 3 0 010 6"/><path d="M21 20c0-2-1.5-3.5-3.5-4"/></svg><span>Contacts</span></a>
+      <a href="#"><svg viewBox="0 0 24 24"><path d="M6 3h9l5 5v13H6z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h6"/></svg><span>Reports</span></a>
+      <div class="sec">Workspace</div>
+      <a href="#"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 00-.1-1l2-1.5-2-3.5-2.4 1a7 7 0 00-1.7-1L16 2H8l-.8 3a7 7 0 00-1.7 1l-2.4-1-2 3.5L3 11a7 7 0 000 2l-2 1.5 2 3.5 2.4-1a7 7 0 001.7 1L8 22h8l.8-3a7 7 0 001.7-1l2.4 1 2-3.5-2-1.5a7 7 0 00.1-1z"/></svg><span>Settings</span></a>
+    </nav>
+    <div class="me"><span class="ava">JR</span><div><div class="nm">Jordan Rivera</div><div class="rl">Enterprise AE</div></div></div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="search"><span>⌕</span> Search accounts, deals, contacts…</div>
+      <div class="tbright">
+        <span title="notifications">🔔</span>
+        <span><span class="dot"></span>Mon, Jun 15 · 7:02 AM</span>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <div class="hello">
+        <h1>Good morning, Jordan.</h1>
+        <p>West Coast · E-commerce vertical · 150 accounts <span class="badge">5 priorities today</span></p>
+      </div>
+
+      <div class="kpis">
+        <div class="kpi"><div class="l">Open pipeline</div><div class="v">$4.2M</div><div class="d">42 deals</div></div>
+        <div class="kpi"><div class="l">Quota (Q3)</div><div class="v">68%</div><div class="d">$1.36M of $2.0M</div></div>
+        <div class="kpi"><div class="l">At risk</div><div class="v r">6</div><div class="d">$820K exposed</div></div>
+        <div class="kpi"><div class="l">Meetings today</div><div class="v">4</div><div class="d">2 external</div></div>
+        <div class="kpi"><div class="l">Follow-ups</div><div class="v">8</div><div class="d">due today</div></div>
+        <div class="kpi"><div class="l">Accounts</div><div class="v">150</div><div class="d">West / e-comm</div></div>
+      </div>
+
+      <div class="panel">
+        <div class="ph"><h2>Accounts heating up</h2><span class="meta">AI fit + intent score · ▲ change vs last week</span></div>
+        <div class="heat">
+          <div class="hcard">
+            <div class="hr"><span class="nm">Tidewater Goods</span><span class="htag exp">Customer</span></div>
+            <div class="sc"><span class="sv">91</span><span class="delta">▲ +16</span></div>
+            <div class="dv">Series C ($40M) + hiring 5 e-commerce ops roles</div>
+            <span class="hact">→ Reframe the renewal as an expansion</span>
+          </div>
+          <div class="hcard">
+            <div class="hr"><span class="nm">Solstice Apparel</span><span class="htag exp">Customer</span></div>
+            <div class="sc"><span class="sv">84</span><span class="delta">▲ +12</span></div>
+            <div class="dv">New DTC storefront live; site traffic up 35%</div>
+            <span class="hact">→ Pitch peak-season capacity upsell</span>
+          </div>
+          <div class="hcard">
+            <div class="hr"><span class="nm">Lumen Cosmetics</span><span class="htag new">Prospect</span></div>
+            <div class="sc"><span class="sv">78</span><span class="delta">▲ +9</span></div>
+            <div class="dv">New CRO joined — former champion at one of your wins</div>
+            <span class="hact">→ Warm intro via your mutual contact</span>
+          </div>
+          <div class="hcard">
+            <div class="hr"><span class="nm">Coastline Coffee</span><span class="htag new">Prospect</span></div>
+            <div class="sc"><span class="sv">73</span><span class="delta">▲ +11</span></div>
+            <div class="dv">Opened a 3rd fulfillment center — scaling fast</div>
+            <span class="hact">→ Open a Q4 readiness conversation</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="cols">
+
+        <div>
+          <div class="panel">
+            <div class="ph"><h2>Today's priorities</h2><span class="meta">ranked by impact × urgency</span></div>
+            <div class="pb">
+              <div class="pri">
+                <div class="rk">1</div>
+                <div class="body">
+                  <div class="ttl">Tidewater Goods <span class="amt">· $185K renewal</span></div>
+                  <div class="rsn">Renews in 8 days · no exec touch in 19 days · champion went quiet</div>
+                  <span class="act">→ Call Maya Chen (VP Ecommerce) before noon</span>
+                </div>
+                <span class="chip r">At risk</span>
+              </div>
+              <div class="pri">
+                <div class="rk">2</div>
+                <div class="body">
+                  <div class="ttl">Pacific Threads <span class="amt">· $240K new</span></div>
+                  <div class="rsn">Stuck in legal 22 days · single-threaded on champion</div>
+                  <span class="act">→ Multi-thread to CFO + Head of Digital</span>
+                </div>
+                <span class="chip r">At risk</span>
+              </div>
+              <div class="pri">
+                <div class="rk">3</div>
+                <div class="body">
+                  <div class="ttl">Cascade Outdoors <span class="amt">· $95K expansion</span></div>
+                  <div class="rsn">You promised the ROI deck by today</div>
+                  <span class="act">→ Send the peak-season ROI model</span>
+                </div>
+                <span class="chip f">Follow-up</span>
+              </div>
+              <div class="pri">
+                <div class="rk">4</div>
+                <div class="body">
+                  <div class="ttl">Golden State Organics <span class="amt">· demo 10:00</span></div>
+                  <div class="rsn">Eval stage · last call they asked about Black Friday scaling</div>
+                  <span class="act">→ Lead with peak-traffic architecture + a customer proof point</span>
+                </div>
+                <span class="chip m">Meeting</span>
+              </div>
+              <div class="pri">
+                <div class="rk">5</div>
+                <div class="body">
+                  <div class="ttl">Harbor &amp; Vine <span class="amt">· QBR 2:00</span></div>
+                  <div class="rsn">Healthy · renewal in 90 days · usage up 30% QoQ</div>
+                  <span class="act">→ Tee up the multi-store expansion</span>
+                </div>
+                <span class="chip u">Upsell</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="ph"><h2>Risk watchlist</h2><span class="meta">rule-based</span></div>
+            <div class="rules"><span class="chip r">No touch · 7 days</span><span class="chip r">No meeting · 21 days</span></div>
+            <div class="pb" style="padding-top:6px;">
+              <table class="wl">
+                <tr><td><div class="acct">Solstice Apparel</div><div class="rule">no touch in 9 days</div></td><td class="amt">$120K</td></tr>
+                <tr><td><div class="acct">Driftwood Home</div><div class="rule">no meeting in 26 days</div></td><td class="amt">$310K</td></tr>
+                <tr><td><div class="acct">Bayside Beauty</div><div class="rule">no touch in 11 days</div></td><td class="amt">$78K</td></tr>
+                <tr><td><div class="acct">Verdant Pet Co.</div><div class="rule">no meeting in 24 days</div></td><td class="amt">$137K</td></tr>
+              </table>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="ph"><h2>People to follow up with</h2><span class="meta">portable to your sequencer</span></div>
+            <div class="pb">
+              <div class="fu"><span class="ci">MC</span><div><div class="who">Maya Chen</div><div class="role">VP Ecommerce · Tidewater Goods</div></div><div class="rsn">champion — gone quiet</div></div>
+              <div class="fu"><span class="ci">DP</span><div><div class="who">Devin Park</div><div class="role">Director of Ops · Cascade Outdoors</div></div><div class="rsn">promised ROI deck</div></div>
+              <div class="fu"><span class="ci">RL</span><div><div class="who">Rosa Lin</div><div class="role">Head of Digital · Solstice Apparel</div></div><div class="rsn">re-engage — 9 days quiet</div></div>
+              <div class="btnrow"><button class="btn">⤴ Export 8 to Outreach</button><span class="fnt" style="font-size:12.5px;">one click → a sequence, no retyping</span></div>
+              <div class="mt"><b>Multi-thread suggestion:</b> Pacific Threads is single-threaded on your champion. The economic buyer (CFO) and the Head of Digital are unengaged — add them before legal stalls again.</div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="panel">
+            <div class="ph"><h2>Your day</h2><span class="meta">time-blocked</span></div>
+            <div class="pb tl">
+              <div class="row"><span class="t">8:00</span><span>Pipeline review &amp; prep</span></div>
+              <div class="row"><span class="t">8:30</span><span>Prospecting — mid-market e-comm</span><span class="tag">protected</span></div>
+              <div class="row"><span class="t">9:30</span><span>Deal prep — Tidewater + Pacific</span></div>
+              <div class="row"><span class="t">9:45</span><span>Prep: Golden State demo</span></div>
+              <div class="row mtg"><span class="t">10:00</span><span>Golden State Organics demo</span></div>
+              <div class="row"><span class="t">11:30</span><span>Follow-ups + Outreach exports</span></div>
+              <div class="row"><span class="t">1:00</span><span>Lunch / reset</span></div>
+              <div class="row mtg"><span class="t">2:00</span><span>Harbor &amp; Vine QBR</span></div>
+              <div class="row"><span class="t">3:30</span><span>Internal pipeline sync</span></div>
+              <div class="row"><span class="t">4:30</span><span>Admin — contained</span></div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="ph"><h2>Territory signals</h2><span class="meta">every item sourced</span></div>
+            <div class="pb">
+              <div class="sig"><div class="hd"><i class="ic">📈</i>Tidewater Goods raised a $40M Series C</div><div class="so">→ expansion budget; revisit the renewal as a growth deal <span class="src">TechCrunch</span></div></div>
+              <div class="sig"><div class="hd"><i class="ic">📰</i>Pacific Threads hired a new VP Ecommerce</div><div class="so">→ new economic buyer; intro + reset priorities <span class="src">LinkedIn</span></div></div>
+              <div class="sig"><div class="hd"><i class="ic">🛒</i>Peak season ~90 days out</div><div class="so">→ open Q4 readiness conversations across the book <span class="src">Internal</span></div></div>
+              <div class="sig"><div class="hd"><i class="ic">⚠</i>Lumen Cosmetics cut 8% of staff</div><div class="so">→ budget caution; soften the timeline ask <span class="src">News</span></div></div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="ph"><h2>Why these?</h2></div>
+            <div class="pb" style="font-size:12.5px; color:var(--muted);">
+              Every flag is scored and explained — never a black box. Reply <b style="color:var(--ink);">why #1</b> in Slack or click any item to see the signals behind it (last activity, stage age, champion engagement, threading, deal size).
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="foot">
+        <div>Morning Brief · Acme Sales — internal preview</div>
+        <div>Read-only &amp; advisory · every recommendation shows its reason and source</div>
+      </div>
+
+    </div>
+  </div>
+</div>
+</body>
+</html>
