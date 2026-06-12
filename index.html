@@ -7,128 +7,198 @@
 <meta name="description" content="Morning Brief — the daily command center for Acme account executives." />
 <style>
   :root{
-    --bg:#0a0b0f; --panel:#14161d; --panel2:#181b23; --hover:#1d212b;
-    --ink:#f4f5f8; --muted:#9499a8; --faint:#646b7c;
-    --line:#23262f; --line2:#1b1e26;
-    --brand:#7c6cff; --brand-2:#9a8cff; --brand-soft:rgba(124,108,255,.16); --brand-ink:#b7adff;
-    --red:#ff5e54; --red-soft:rgba(255,94,84,.15); --red-ink:#ff968f;
-    --amber:#f2ad2e; --amber-soft:rgba(242,173,46,.15); --amber-ink:#f6c264;
-    --green:#33d684; --green-soft:rgba(51,214,132,.15); --green-ink:#6ee3a8;
-    --blue:#52a4ff; --blue-soft:rgba(82,164,255,.15); --blue-ink:#8cc1ff;
-    --r:14px; --r-sm:10px;
+    --bg:#0a0c11; --panel:#13161e; --panel2:#171b24; --hover:#1b202b;
+    --ink:#f1f3f8; --ink2:#dfe3ec; --muted:#8e95a6; --faint:#5d6576;
+    --line:#20242f; --line2:#191d26;
+    --accent:#5fe6a4; --accent-soft:rgba(95,230,164,.13); --accent-ink:#8aeebd; --accent-dk:#06140d;
+    --violet:#8b7dff; --violet-soft:rgba(139,125,255,.15); --violet-ink:#b7adff;
+    --red:#ff6058; --red-soft:rgba(255,96,88,.13); --red-ink:#ff968f;
+    --amber:#f2ad2e; --amber-soft:rgba(242,173,46,.13); --amber-ink:#f4bd5c;
+    --blue:#5aa6ff; --blue-soft:rgba(90,166,255,.13); --blue-ink:#8cc1ff;
+    --r:16px; --r-sm:11px; --r-xs:8px;
   }
   *{box-sizing:border-box;}
-  body{margin:0; background:var(--bg); color:var(--ink); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; font-size:14px; line-height:1.5; -webkit-font-smoothing:antialiased;}
+  body{margin:0; background:var(--bg); color:var(--ink); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; font-size:14px; line-height:1.55; -webkit-font-smoothing:antialiased;}
   .mut{color:var(--muted);} .fnt{color:var(--faint);}
   svg{display:block;}
-
   .app{display:flex; min-height:100vh;}
 
-  /* sidebar */
-  .side{width:224px; flex-shrink:0; background:var(--panel); border-right:1px solid var(--line); display:flex; flex-direction:column; position:sticky; top:0; height:100vh;}
-  .side .brand{display:flex; align-items:center; gap:10px; font-weight:700; font-size:15px; padding:18px 18px 16px;}
-  .side .brand .mk{width:28px; height:28px; border-radius:8px; background:var(--brand); color:#fff; display:flex; align-items:center; justify-content:center; font-size:16px; font-weight:800;}
+  .side{width:230px; flex-shrink:0; background:var(--panel); border-right:1px solid var(--line); display:flex; flex-direction:column; position:sticky; top:0; height:100vh;}
+  .side .brand{display:flex; align-items:center; gap:10px; font-weight:700; font-size:15px; padding:20px 20px 18px;}
+  .side .brand .mk{width:28px; height:28px; border-radius:9px; background:var(--accent); color:var(--accent-dk); display:flex; align-items:center; justify-content:center; font-size:16px; font-weight:800;}
   .nav{padding:6px 12px; display:flex; flex-direction:column; gap:2px;}
-  .nav a{display:flex; align-items:center; gap:11px; padding:9px 12px; border-radius:9px; color:var(--muted); text-decoration:none; font-size:13.5px; font-weight:500;}
+  .nav a{display:flex; align-items:center; gap:11px; padding:9px 12px; border-radius:10px; color:var(--muted); text-decoration:none; font-size:13.5px; font-weight:500; cursor:pointer;}
   .nav a svg{width:18px; height:18px; stroke:currentColor; fill:none; stroke-width:1.8;}
   .nav a:hover{background:var(--hover); color:var(--ink);}
-  .nav a.on{background:var(--brand-soft); color:var(--brand-ink);}
-  .nav .sec{font-size:11px; text-transform:uppercase; letter-spacing:.07em; color:var(--faint); padding:14px 12px 6px;}
+  .nav a.on{background:var(--accent-soft); color:var(--accent-ink);}
+  .nav .sec{font-size:10.5px; text-transform:uppercase; letter-spacing:.08em; color:var(--faint); padding:16px 12px 6px;}
   .side .me{margin-top:auto; border-top:1px solid var(--line); padding:14px 16px; display:flex; align-items:center; gap:10px;}
-  .side .me .ava{width:30px; height:30px; border-radius:50%; background:var(--brand-soft); color:var(--brand-ink); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:12px;}
+  .side .me .ava{width:30px; height:30px; border-radius:50%; background:var(--accent-soft); color:var(--accent-ink); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:12px;}
   .side .me .nm{font-size:13px; font-weight:600;} .side .me .rl{font-size:11.5px; color:var(--faint);}
-  @media(max-width:880px){ .side{width:62px;} .side .brand span, .nav a span, .nav .sec, .side .me div{display:none;} .side .brand{justify-content:center; padding:18px 0;} .nav a{justify-content:center;} .side .me{justify-content:center;} }
+  @media(max-width:880px){ .side{width:60px;} .side .brand span, .nav a span, .nav .sec, .side .me div{display:none;} .side .brand{justify-content:center; padding:20px 0;} .nav a{justify-content:center;} .side .me{justify-content:center;} }
 
-  /* main */
   .main{flex:1; min-width:0;}
-  .topbar{position:sticky; top:0; z-index:20; background:rgba(10,11,15,.82); backdrop-filter:blur(10px); border-bottom:1px solid var(--line); height:58px; display:flex; align-items:center; gap:16px; padding:0 24px;}
-  .search{flex:1; max-width:420px; background:var(--panel2); border:1px solid var(--line); border-radius:9px; height:34px; display:flex; align-items:center; padding:0 12px; color:var(--faint); font-size:13px; gap:8px;}
-  .tbright{margin-left:auto; display:flex; align-items:center; gap:16px; color:var(--muted); font-size:13px;}
-  .tbright .dot{width:7px; height:7px; border-radius:50%; background:var(--green); display:inline-block; margin-right:6px;}
+  .topbar{position:sticky; top:0; z-index:20; background:rgba(10,12,17,.84); backdrop-filter:blur(12px); border-bottom:1px solid var(--line); height:58px; display:flex; align-items:center; gap:16px; padding:0 28px;}
+  .search{flex:1; max-width:440px; background:var(--panel2); border:1px solid var(--line); border-radius:10px; height:34px; display:flex; align-items:center; padding:0 12px; color:var(--faint); font-size:13px; gap:8px;}
+  .tbright{margin-left:auto; display:flex; align-items:center; gap:18px; color:var(--muted); font-size:13px;}
+  .tbright .dot{width:7px; height:7px; border-radius:50%; background:var(--accent); display:inline-block; margin-right:7px;}
   @media(max-width:620px){ .search{display:none;} }
 
-  .content{padding:24px 26px 64px; max-width:1240px;}
+  .content{padding:30px 32px 72px; max-width:1280px;}
+  .view{display:none;} .view.on{display:block;}
 
-  .hello h1{font-size:24px; margin:0 0 4px; letter-spacing:-.02em;}
-  .hello p{margin:0 0 22px; color:var(--muted);}
-  .hello .badge{display:inline-block; background:var(--brand-soft); color:var(--brand-ink); font-size:12px; font-weight:600; padding:2px 10px; border-radius:999px; margin-left:6px;}
+  .hello h1{font-size:25px; margin:0 0 5px; letter-spacing:-.02em; font-weight:650;}
+  .hello p{margin:0; color:var(--muted); font-size:14.5px;}
+  .hello b{color:var(--ink2); font-weight:600;}
+  .hello{margin-bottom:22px;}
 
-  .kpis{display:grid; grid-template-columns:repeat(6,1fr); gap:12px; margin-bottom:22px;}
-  @media(max-width:1040px){ .kpis{grid-template-columns:repeat(3,1fr);} }
-  @media(max-width:560px){ .kpis{grid-template-columns:repeat(2,1fr);} }
-  .kpi{background:var(--panel); border:1px solid var(--line); border-radius:var(--r-sm); padding:13px 15px;}
-  .kpi .l{font-size:12px; color:var(--muted); margin-bottom:4px;}
-  .kpi .v{font-size:22px; font-weight:700; letter-spacing:-.02em;}
-  .kpi .v.r{color:var(--red);} .kpi .d{font-size:11.5px; color:var(--faint); margin-top:2px;}
+  .band{display:flex; align-items:center; gap:28px; background:var(--panel); border:1px solid var(--line); border-radius:var(--r); padding:18px 24px; margin-bottom:26px; flex-wrap:wrap;}
+  .quota{flex:1; min-width:240px;}
+  .quota .qt{display:flex; align-items:baseline; gap:10px; margin-bottom:9px;}
+  .quota .qt .pct{font-size:26px; font-weight:750; letter-spacing:-.02em;}
+  .quota .qt .ql{font-size:12.5px; color:var(--muted);}
+  .bar{height:7px; background:var(--panel2); border-radius:99px; overflow:hidden;}
+  .bar i{display:block; height:100%; width:68%; background:var(--accent); border-radius:99px;}
+  .bstats{display:flex; gap:26px;}
+  .bstat .l{font-size:11.5px; color:var(--muted); margin-bottom:3px;}
+  .bstat .v{font-size:18px; font-weight:700; letter-spacing:-.01em;}
+  .bstat .v.r{color:var(--red-ink);}
+  @media(max-width:720px){ .bstats{gap:18px; flex-wrap:wrap;} }
 
-  .panel{background:var(--panel); border:1px solid var(--line); border-radius:var(--r); margin-bottom:20px;}
-  .ph{display:flex; align-items:center; justify-content:space-between; padding:15px 18px; border-bottom:1px solid var(--line2);}
-  .ph h2{font-size:15px; margin:0; letter-spacing:-.01em;}
-  .ph .meta{font-size:12px; color:var(--faint);}
-  .pb{padding:8px 18px 16px;}
+  .btn{display:inline-flex; align-items:center; gap:7px; background:var(--accent); color:var(--accent-dk); font-size:13px; font-weight:700; padding:9px 15px; border-radius:9px; border:none; cursor:pointer;}
+  .btn.ghost{background:var(--panel2); color:var(--ink); border:1px solid var(--line);}
+  .btn.sm{padding:6px 11px; font-size:12px;}
 
-  /* heating up */
-  .heat{display:grid; grid-template-columns:repeat(4,1fr); gap:12px; padding:6px 18px 16px;}
-  @media(max-width:1040px){ .heat{grid-template-columns:repeat(2,1fr);} }
-  @media(max-width:560px){ .heat{grid-template-columns:1fr;} }
-  .hcard{background:var(--panel2); border:1px solid var(--line); border-radius:var(--r-sm); padding:14px;}
-  .hcard .hr{display:flex; align-items:center; justify-content:space-between; margin-bottom:9px;}
-  .hcard .nm{font-weight:600; font-size:13.5px;}
-  .htag{font-size:10px; font-weight:700; padding:2px 7px; border-radius:5px; letter-spacing:.02em;}
-  .htag.exp{background:var(--green-soft); color:var(--green-ink);}
-  .htag.new{background:var(--blue-soft); color:var(--blue-ink);}
-  .hcard .sc{display:flex; align-items:baseline; gap:9px; margin-bottom:7px;}
-  .hcard .sv{font-size:27px; font-weight:800; letter-spacing:-.02em; line-height:1;}
-  .delta{font-size:12px; font-weight:700; color:var(--green-ink); background:var(--green-soft); padding:2px 7px; border-radius:6px;}
-  .hcard .dv{font-size:12px; color:var(--muted); line-height:1.45;}
-  .hcard .hact{font-size:11.5px; color:var(--brand-ink); font-weight:600; margin-top:8px; display:inline-block;}
+  .card{background:var(--panel); border:1px solid var(--line); border-radius:var(--r); padding:6px 22px 16px; margin-bottom:24px;}
+  .card .ch{display:flex; align-items:center; justify-content:space-between; padding:17px 0 11px;}
+  .card .ch h2{font-size:15px; margin:0; font-weight:650; letter-spacing:-.01em;}
+  .card .ch .meta{font-size:12px; color:var(--faint); display:flex; align-items:center; gap:6px;}
+  .livedot{width:7px;height:7px;border-radius:50%;background:var(--accent);display:inline-block;box-shadow:0 0 0 0 rgba(95,230,164,.5);}
 
-  .cols{display:grid; grid-template-columns:1.7fr 1fr; gap:20px; align-items:start;}
+  /* HERO priorities */
+  .phero .ch h2{font-size:17px;}
+  .lead{position:relative; background:linear-gradient(180deg,rgba(95,230,164,.07),rgba(95,230,164,0)); border:1px solid rgba(95,230,164,.3); border-radius:var(--r-sm); padding:18px 20px; margin:4px 0 6px; cursor:pointer;}
+  .lead .fl{display:flex; align-items:center; gap:8px; font-size:11px; text-transform:uppercase; letter-spacing:.09em; color:var(--accent-ink); font-weight:700; margin-bottom:9px;}
+  .lead .lt{font-size:18px; font-weight:650; letter-spacing:-.01em; margin-bottom:5px;}
+  .lead .lt .amt{color:var(--muted); font-weight:600; font-size:15px;}
+  .lead .lr{color:var(--muted); font-size:13.5px; margin-bottom:14px; max-width:680px;}
+  .lead .fa{display:flex; gap:10px; flex-wrap:wrap;}
+  .lead .pulse{position:absolute; top:18px; right:20px; font-size:11.5px; color:var(--red-ink); background:var(--red-soft); padding:3px 10px; border-radius:99px; font-weight:600;}
+
+  .pbig{display:flex; gap:14px; align-items:center; padding:15px 0; border-top:1px solid var(--line2); cursor:pointer;}
+  .pbig:hover{background:var(--hover); margin:0 -22px; padding-left:22px; padding-right:22px;}
+  .pbig .rk{width:8px; height:8px; border-radius:50%; flex-shrink:0;}
+  .rk.red{background:var(--red);} .rk.amber{background:var(--amber);} .rk.blue{background:var(--blue);} .rk.green{background:var(--accent);}
+  .pbig .pm{flex:1; min-width:0;}
+  .pbig .pt{font-weight:600; font-size:14.5px;} .pbig .pt .amt{color:var(--muted); font-weight:500;}
+  .pbig .pr{color:var(--muted); font-size:13px; margin-top:2px;}
+  .pbig .tag{font-size:11px; color:var(--faint); white-space:nowrap;} .pbig .tag.risk{color:var(--red-ink);}
+  .pbig .chev{color:var(--faint); font-size:16px;}
+
+  .cols{display:grid; grid-template-columns:1.6fr 1fr; gap:24px; align-items:start;}
   @media(max-width:980px){ .cols{grid-template-columns:1fr;} }
 
-  .pri{display:flex; gap:13px; align-items:flex-start; padding:13px 0; border-bottom:1px solid var(--line2);}
-  .pri:last-child{border-bottom:none;}
-  .pri .rk{width:23px; height:23px; border-radius:7px; background:var(--panel2); color:var(--muted); font-size:12px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px;}
-  .pri .body{flex:1; min-width:0;}
-  .pri .ttl{font-weight:600;} .pri .ttl .amt{color:var(--muted); font-weight:600;}
-  .pri .rsn{color:var(--muted); font-size:13px; margin-top:2px;}
-  .pri .act{color:var(--brand-ink); font-size:12.5px; font-weight:600; margin-top:5px; display:inline-block;}
-  .chip{font-size:11px; font-weight:600; padding:2px 9px; border-radius:6px; white-space:nowrap; flex-shrink:0; margin-top:1px;}
-  .chip.r{background:var(--red-soft); color:var(--red-ink);}
-  .chip.f{background:var(--panel2); color:var(--muted);}
-  .chip.m{background:var(--blue-soft); color:var(--blue-ink);}
-  .chip.u{background:var(--green-soft); color:var(--green-ink);}
+  /* news */
+  .ni{display:flex; gap:13px; padding:14px 0; border-top:1px solid var(--line2); cursor:pointer;}
+  .ni:first-child{border-top:none;}
+  .ni:hover .nh{color:var(--accent-ink);}
+  .ni .nd{width:34px;height:34px;border-radius:9px;background:var(--panel2);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+  .ni .nh{font-weight:600; font-size:14px;}
+  .ni .nso{color:var(--muted); font-size:12.5px; margin-top:2px;}
+  .ni .nmeta{display:flex; align-items:center; gap:8px; margin-top:7px; flex-wrap:wrap;}
+  .ni .nsrc{font-size:11px; color:var(--faint);}
+  .nchip{font-size:10.5px; font-weight:600; padding:2px 8px; border-radius:6px;}
+  .nchip.opp{background:var(--accent-soft); color:var(--accent-ink);}
+  .nchip.risk{background:var(--red-soft); color:var(--red-ink);}
+  .nchip.mkt{background:var(--panel2); color:var(--muted);}
 
-  table{width:100%; border-collapse:collapse;}
-  .wl td{padding:11px 0; border-bottom:1px solid var(--line2); font-size:13.5px;}
-  .wl tr:last-child td{border-bottom:none;}
-  .wl .acct{font-weight:600;}
-  .wl .rule{color:var(--red-ink); font-size:12.5px;}
-  .wl .amt{text-align:right; font-weight:600; color:var(--muted); white-space:nowrap;}
-  .rules{display:flex; gap:8px; padding:0 18px 4px;}
+  /* needs attention */
+  .wrow{display:flex; align-items:center; gap:12px; padding:13px 0; border-top:1px solid var(--line2); cursor:pointer; font-size:13.5px;}
+  .wrow:hover{background:var(--hover); margin:0 -22px; padding-left:22px; padding-right:22px;}
+  .wrow .wm{flex:1;} .wrow .wa{font-weight:600;} .wrow .wr{color:var(--red-ink); font-size:12.5px; margin-top:1px;}
+  .wrow .wv{color:var(--muted); font-weight:600; margin-right:4px;}
+  .wrow .wact{font-size:11px; color:var(--accent-ink); white-space:nowrap;}
 
-  .fu{display:flex; align-items:center; gap:12px; padding:11px 0; border-bottom:1px solid var(--line2);}
-  .fu:last-of-type{border-bottom:none;}
-  .fu .ci{width:30px; height:30px; border-radius:50%; background:var(--brand-soft); color:var(--brand-ink); font-size:11px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0;}
-  .fu .who{font-weight:600;} .fu .role{color:var(--muted); font-size:12.5px;}
-  .fu .rsn{margin-left:auto; color:var(--faint); font-size:12px; text-align:right;}
-  .btn{display:inline-flex; align-items:center; gap:7px; background:var(--brand); color:#fff; font-size:12.5px; font-weight:600; padding:9px 14px; border-radius:8px; border:none; cursor:pointer;}
-  .btnrow{display:flex; align-items:center; gap:11px; margin:14px 0 4px; flex-wrap:wrap;}
-  .mt{background:var(--amber-soft); border:1px solid rgba(242,173,46,.2); border-radius:var(--r-sm); padding:11px 13px; font-size:12.5px; color:var(--amber-ink); margin-top:12px;}
+  /* follow up */
+  .fu{display:flex; align-items:center; gap:12px; padding:12px 0; border-top:1px solid var(--line2);}
+  .fu .ci{width:32px; height:32px; border-radius:50%; background:var(--violet-soft); color:var(--violet-ink); font-size:11px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0;}
+  .fu .who{font-weight:600; font-size:13.5px;} .fu .role{color:var(--muted); font-size:12px;}
+  .fu .rsn{margin-left:auto; color:var(--faint); font-size:11.5px; text-align:right;}
+  .mt{background:var(--amber-soft); border:1px solid rgba(242,173,46,.2); border-radius:var(--r-sm); padding:11px 13px; font-size:12.5px; color:var(--amber-ink); margin-top:14px;}
 
-  .tl .row{display:flex; gap:12px; padding:9px 0; border-bottom:1px solid var(--line2); font-size:13px;}
-  .tl .row:last-child{border-bottom:none;}
-  .tl .t{min-width:50px; font-weight:700; color:var(--muted); font-variant-numeric:tabular-nums;}
-  .tl .row.mtg .t{color:var(--blue-ink);} .tl .row.mtg span{color:var(--blue-ink); font-weight:600;}
-  .tl .tag{margin-left:auto; font-size:10.5px; color:var(--faint);}
+  /* your day (bigger) */
+  .day .blk{padding:11px 0; border-top:1px solid var(--line2); display:flex; gap:13px; align-items:baseline; font-size:13.5px;}
+  .day .blk:first-child{border-top:none;}
+  .day .t{min-width:52px; font-weight:700; color:var(--muted); font-variant-numeric:tabular-nums; font-size:13px;}
+  .day .now{margin-left:auto; font-size:10px; color:var(--accent-ink); font-weight:700;}
+  .day .mtg{display:block; background:var(--panel2); border-left:3px solid var(--blue); border-radius:0 var(--r-sm) var(--r-sm) 0; padding:12px 14px; margin:9px 0; cursor:pointer;}
+  .day .mtg .mh{display:flex; align-items:baseline; gap:10px;}
+  .day .mtg .mt2{font-weight:650; font-size:14px;} .day .mtg .mtime{color:var(--blue-ink); font-weight:700; font-size:12.5px;}
+  .day .mtg .mctx{color:var(--muted); font-size:12.5px; margin-top:3px;}
+  .day .mtg .mprep{color:var(--accent-ink); font-size:11.5px; font-weight:600; margin-top:6px; display:inline-block;}
 
-  .sig{padding:11px 0; border-bottom:1px solid var(--line2); font-size:13px;}
-  .sig:last-child{border-bottom:none;}
-  .sig .hd{font-weight:600;} .sig .so{color:var(--muted);}
-  .sig .src{font-size:10.5px; color:var(--brand-ink); background:var(--brand-soft); padding:1px 7px; border-radius:5px; margin-left:4px;}
+  /* heating up mini */
+  .mini{display:flex; align-items:center; gap:11px; padding:11px 0; border-top:1px solid var(--line2); cursor:pointer;}
+  .mini:first-child{border-top:none;}
+  .mini:hover .mn{color:var(--accent-ink);}
+  .mini .mn{font-weight:600; font-size:13.5px;} .mini .md{font-size:11.5px; color:var(--muted);}
+  .mini .ms{margin-left:auto; text-align:right;}
+  .mini .msv{font-weight:700; font-size:14px;} .mini .msd{font-size:11px; font-weight:700; color:var(--accent-ink);}
+
+  .foot{padding:8px 2px 0; color:var(--faint); font-size:12px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;}
+
+  /* ===== accounts view ===== */
+  .ahead{display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:20px;}
+  .ahead h1{font-size:22px; margin:0; letter-spacing:-.02em; font-weight:650;}
+  .pills{display:flex; gap:7px;}
+  .pill{font-size:12px; color:var(--muted); background:var(--panel); border:1px solid var(--line); padding:6px 13px; border-radius:99px; cursor:pointer;}
+  .pill.on{background:var(--accent-soft); color:var(--accent-ink); border-color:transparent;}
+  .acctwrap{display:grid; grid-template-columns:312px 1fr; gap:24px; align-items:start;}
+  @media(max-width:900px){ .acctwrap{grid-template-columns:1fr;} }
+  .alist{background:var(--panel); border:1px solid var(--line); border-radius:var(--r); overflow:hidden;}
+  .arow{display:flex; align-items:center; gap:12px; padding:13px 16px; border-top:1px solid var(--line2); cursor:pointer;}
+  .arow:first-child{border-top:none;}
+  .arow:hover{background:var(--hover);}
+  .arow.on{background:var(--accent-soft);}
+  .arow .ab{width:34px; height:34px; border-radius:9px; background:var(--panel2); display:flex; align-items:center; justify-content:center; font-size:11.5px; font-weight:700; color:var(--muted); flex-shrink:0;}
+  .arow.on .ab{background:var(--accent); color:var(--accent-dk);}
+  .arow .an{font-weight:600; font-size:13.5px;}
+  .arow .at{font-size:11.5px; color:var(--faint);}
+  .arow .as{margin-left:auto; text-align:right;}
+  .arow .asv{font-weight:750; font-size:15px;}
+  .arow .asd{font-size:11px; font-weight:700;}
+  .up{color:var(--accent-ink);} .dn2{color:var(--red-ink);}
+
+  .dhead{display:flex; align-items:flex-start; gap:14px; margin-bottom:20px; flex-wrap:wrap;}
+  .dhead .dl{flex:1; min-width:200px;}
+  .dhead h2{font-size:22px; margin:0 0 4px; letter-spacing:-.02em; font-weight:650;}
+  .dhead .sub{color:var(--muted); font-size:13px;}
+  .hl{font-size:11px; font-weight:700; padding:4px 11px; border-radius:99px;}
+  .hl.risk{background:var(--red-soft); color:var(--red-ink);} .hl.ok{background:var(--accent-soft); color:var(--accent-ink);}
+  .hl.cool{background:var(--amber-soft); color:var(--amber-ink);} .hl.warm{background:var(--blue-soft); color:var(--blue-ink);}
+
+  .dhero{display:flex; align-items:center; gap:26px; background:var(--panel); border:1px solid var(--line); border-radius:var(--r); padding:20px 24px; margin-bottom:24px; flex-wrap:wrap;}
+  .dhero .sp{margin-top:6px;}
+  .dfacts{display:flex; gap:30px; flex-wrap:wrap;}
+  .dfact .l{font-size:11.5px; color:var(--muted); margin-bottom:3px;}
+  .dfact .v{font-size:16px; font-weight:700; letter-spacing:-.01em;}
+  .dtr{font-size:12px; font-weight:700; color:var(--accent-ink); background:var(--accent-soft); padding:2px 8px; border-radius:6px;}
+  .dtr.dn{color:var(--red-ink); background:var(--red-soft);}
+
+  .dgrid{display:grid; grid-template-columns:1fr 1fr; gap:24px; align-items:start;}
+  @media(max-width:760px){ .dgrid{grid-template-columns:1fr;} }
+  .acts{list-style:none; padding:0; margin:4px 0 0;}
+  .acts li{margin:0 0 10px; padding-left:20px; position:relative; font-size:13.5px;}
+  .acts li::before{content:""; position:absolute; left:0; top:7px; width:7px; height:7px; border-radius:50%; background:var(--accent);}
+  .ct{display:flex; align-items:center; gap:11px; padding:10px 0; border-top:1px solid var(--line2);}
+  .ct:first-child{border-top:none;}
+  .ct .ci{width:30px;height:30px;border-radius:50%;background:var(--violet-soft);color:var(--violet-ink);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .ct .st{margin-left:auto;font-size:11px;color:var(--faint);} .ct .st.q{color:var(--red-ink);}
+  .sig{padding:10px 0; border-top:1px solid var(--line2); font-size:13px;} .sig:first-child{border-top:none;}
+  .sig .src{font-size:10.5px; color:var(--accent-ink); background:var(--accent-soft); padding:1px 7px; border-radius:5px; margin-left:4px;}
   .ic{font-style:normal; margin-right:6px;}
-
-  .foot{padding:6px 2px 0; color:var(--faint); font-size:12px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:8px;}
+  .av .r{display:flex;gap:12px;padding:9px 0;border-top:1px solid var(--line2);font-size:12.5px;} .av .r:first-child{border-top:none;}
+  .av .w{min-width:70px;color:var(--faint);font-size:11.5px;}
 </style>
 </head>
 <body>
@@ -137,13 +207,13 @@
   <aside class="side">
     <div class="brand"><span class="mk">A</span><span>Acme Sales</span></div>
     <nav class="nav">
-      <a class="on" href="#"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg><span>Morning Brief</span></a>
-      <a href="#"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span>Accounts</span></a>
-      <a href="#"><svg viewBox="0 0 24 24"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M8 16v-5"/><path d="M12 16V8"/><path d="M16 16v-7"/></svg><span>Pipeline</span></a>
-      <a href="#"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3 3-5 6-5s6 2 6 5"/><path d="M16 6a3 3 0 010 6"/><path d="M21 20c0-2-1.5-3.5-3.5-4"/></svg><span>Contacts</span></a>
-      <a href="#"><svg viewBox="0 0 24 24"><path d="M6 3h9l5 5v13H6z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h6"/></svg><span>Reports</span></a>
+      <a class="on" data-view="brief"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg><span>Morning Brief</span></a>
+      <a data-view="accounts"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span>Accounts</span></a>
+      <a><svg viewBox="0 0 24 24"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M8 16v-5"/><path d="M12 16V8"/><path d="M16 16v-7"/></svg><span>Pipeline</span></a>
+      <a><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3 3-5 6-5s6 2 6 5"/><path d="M16 6a3 3 0 010 6"/><path d="M21 20c0-2-1.5-3.5-3.5-4"/></svg><span>Contacts</span></a>
+      <a><svg viewBox="0 0 24 24"><path d="M6 3h9l5 5v13H6z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h6"/></svg><span>Reports</span></a>
       <div class="sec">Workspace</div>
-      <a href="#"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 00-.1-1l2-1.5-2-3.5-2.4 1a7 7 0 00-1.7-1L16 2H8l-.8 3a7 7 0 00-1.7 1l-2.4-1-2 3.5L3 11a7 7 0 000 2l-2 1.5 2 3.5 2.4-1a7 7 0 001.7 1L8 22h8l.8-3a7 7 0 001.7-1l2.4 1 2-3.5-2-1.5a7 7 0 00.1-1z"/></svg><span>Settings</span></a>
+      <a><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 00-.1-1l2-1.5-2-3.5-2.4 1a7 7 0 00-1.7-1L16 2H8l-.8 3a7 7 0 00-1.7 1l-2.4-1-2 3.5L3 11a7 7 0 000 2l-2 1.5 2 3.5 2.4-1a7 7 0 001.7 1L8 22h8l.8-3a7 7 0 001.7-1l2.4 1 2-3.5-2-1.5a7 7 0 00.1-1z"/></svg><span>Settings</span></a>
     </nav>
     <div class="me"><span class="ava">JR</span><div><div class="nm">Jordan Rivera</div><div class="rl">Enterprise AE</div></div></div>
   </aside>
@@ -151,181 +221,248 @@
   <div class="main">
     <div class="topbar">
       <div class="search"><span>⌕</span> Search accounts, deals, contacts…</div>
-      <div class="tbright">
-        <span title="notifications">🔔</span>
-        <span><span class="dot"></span>Mon, Jun 15 · 7:02 AM</span>
-      </div>
+      <div class="tbright"><span title="notifications">🔔</span><span><span class="dot"></span>Mon, Jun 15 · 7:02 AM</span></div>
     </div>
 
     <div class="content">
 
-      <div class="hello">
-        <h1>Good morning, Jordan.</h1>
-        <p>West Coast · E-commerce vertical · 150 accounts <span class="badge">5 priorities today</span></p>
-      </div>
+      <!-- ===== MORNING BRIEF ===== -->
+      <div id="view-brief" class="view on">
+        <div class="hello">
+          <h1>Good morning, Jordan.</h1>
+          <p>You have <b>5 priorities</b>, <b>4 meetings</b>, and <b>6 deals worth $820K</b> that need attention today.</p>
+        </div>
 
-      <div class="kpis">
-        <div class="kpi"><div class="l">Open pipeline</div><div class="v">$4.2M</div><div class="d">42 deals</div></div>
-        <div class="kpi"><div class="l">Quota (Q3)</div><div class="v">68%</div><div class="d">$1.36M of $2.0M</div></div>
-        <div class="kpi"><div class="l">At risk</div><div class="v r">6</div><div class="d">$820K exposed</div></div>
-        <div class="kpi"><div class="l">Meetings today</div><div class="v">4</div><div class="d">2 external</div></div>
-        <div class="kpi"><div class="l">Follow-ups</div><div class="v">8</div><div class="d">due today</div></div>
-        <div class="kpi"><div class="l">Accounts</div><div class="v">150</div><div class="d">West / e-comm</div></div>
-      </div>
-
-      <div class="panel">
-        <div class="ph"><h2>Accounts heating up</h2><span class="meta">AI fit + intent score · ▲ change vs last week</span></div>
-        <div class="heat">
-          <div class="hcard">
-            <div class="hr"><span class="nm">Tidewater Goods</span><span class="htag exp">Customer</span></div>
-            <div class="sc"><span class="sv">91</span><span class="delta">▲ +16</span></div>
-            <div class="dv">Series C ($40M) + hiring 5 e-commerce ops roles</div>
-            <span class="hact">→ Reframe the renewal as an expansion</span>
+        <div class="band">
+          <div class="quota">
+            <div class="qt"><span class="pct">68%</span><span class="ql">to Q3 quota · $1.36M of $2.0M</span></div>
+            <div class="bar"><i></i></div>
           </div>
-          <div class="hcard">
-            <div class="hr"><span class="nm">Solstice Apparel</span><span class="htag exp">Customer</span></div>
-            <div class="sc"><span class="sv">84</span><span class="delta">▲ +12</span></div>
-            <div class="dv">New DTC storefront live; site traffic up 35%</div>
-            <span class="hact">→ Pitch peak-season capacity upsell</span>
-          </div>
-          <div class="hcard">
-            <div class="hr"><span class="nm">Lumen Cosmetics</span><span class="htag new">Prospect</span></div>
-            <div class="sc"><span class="sv">78</span><span class="delta">▲ +9</span></div>
-            <div class="dv">New CRO joined — former champion at one of your wins</div>
-            <span class="hact">→ Warm intro via your mutual contact</span>
-          </div>
-          <div class="hcard">
-            <div class="hr"><span class="nm">Coastline Coffee</span><span class="htag new">Prospect</span></div>
-            <div class="sc"><span class="sv">73</span><span class="delta">▲ +11</span></div>
-            <div class="dv">Opened a 3rd fulfillment center — scaling fast</div>
-            <span class="hact">→ Open a Q4 readiness conversation</span>
+          <div class="bstats">
+            <div class="bstat"><div class="l">Open pipeline</div><div class="v">$4.2M</div></div>
+            <div class="bstat"><div class="l">At risk</div><div class="v r">$820K</div></div>
+            <div class="bstat"><div class="l">Meetings</div><div class="v">4</div></div>
+            <div class="bstat"><div class="l">Accounts</div><div class="v">150</div></div>
           </div>
         </div>
-      </div>
 
-      <div class="cols">
-
-        <div>
-          <div class="panel">
-            <div class="ph"><h2>Today's priorities</h2><span class="meta">ranked by impact × urgency</span></div>
-            <div class="pb">
-              <div class="pri">
-                <div class="rk">1</div>
-                <div class="body">
-                  <div class="ttl">Tidewater Goods <span class="amt">· $185K renewal</span></div>
-                  <div class="rsn">Renews in 8 days · no exec touch in 19 days · champion went quiet</div>
-                  <span class="act">→ Call Maya Chen (VP Ecommerce) before noon</span>
-                </div>
-                <span class="chip r">At risk</span>
-              </div>
-              <div class="pri">
-                <div class="rk">2</div>
-                <div class="body">
-                  <div class="ttl">Pacific Threads <span class="amt">· $240K new</span></div>
-                  <div class="rsn">Stuck in legal 22 days · single-threaded on champion</div>
-                  <span class="act">→ Multi-thread to CFO + Head of Digital</span>
-                </div>
-                <span class="chip r">At risk</span>
-              </div>
-              <div class="pri">
-                <div class="rk">3</div>
-                <div class="body">
-                  <div class="ttl">Cascade Outdoors <span class="amt">· $95K expansion</span></div>
-                  <div class="rsn">You promised the ROI deck by today</div>
-                  <span class="act">→ Send the peak-season ROI model</span>
-                </div>
-                <span class="chip f">Follow-up</span>
-              </div>
-              <div class="pri">
-                <div class="rk">4</div>
-                <div class="body">
-                  <div class="ttl">Golden State Organics <span class="amt">· demo 10:00</span></div>
-                  <div class="rsn">Eval stage · last call they asked about Black Friday scaling</div>
-                  <span class="act">→ Lead with peak-traffic architecture + a customer proof point</span>
-                </div>
-                <span class="chip m">Meeting</span>
-              </div>
-              <div class="pri">
-                <div class="rk">5</div>
-                <div class="body">
-                  <div class="ttl">Harbor &amp; Vine <span class="amt">· QBR 2:00</span></div>
-                  <div class="rsn">Healthy · renewal in 90 days · usage up 30% QoQ</div>
-                  <span class="act">→ Tee up the multi-store expansion</span>
-                </div>
-                <span class="chip u">Upsell</span>
-              </div>
-            </div>
+        <!-- HERO: Today's priorities -->
+        <div class="card phero">
+          <div class="ch"><h2>Today's priorities</h2><span class="meta">5 things · ranked by impact × urgency · click to open</span></div>
+          <div class="lead" data-acct="tidewater">
+            <span class="pulse">Renews in 8 days</span>
+            <div class="fl">◆ Start here</div>
+            <div class="lt">Tidewater Goods <span class="amt">· $185K renewal</span></div>
+            <div class="lr">Your largest renewal is slipping — no executive touch in 19 days and the champion has gone quiet. They just raised a $40M Series C, so there's room to turn this into an expansion if you move today.</div>
+            <div class="fa"><button class="btn" onclick="event.stopPropagation()">Call Maya Chen</button><button class="btn ghost" onclick="event.stopPropagation()">Open account →</button></div>
           </div>
+          <div class="pbig" data-acct="pacific"><span class="rk red"></span><div class="pm"><div class="pt">Pacific Threads <span class="amt">· $240K</span></div><div class="pr">Stuck in legal 22 days · single-threaded → multi-thread to the CFO + Head of Digital</div></div><span class="tag risk">At risk</span><span class="chev">›</span></div>
+          <div class="pbig" data-acct="cascade"><span class="rk amber"></span><div class="pm"><div class="pt">Cascade Outdoors <span class="amt">· $95K</span></div><div class="pr">ROI deck promised today → send the peak-season model</div></div><span class="tag">Follow-up</span><span class="chev">›</span></div>
+          <div class="pbig" data-acct="golden"><span class="rk blue"></span><div class="pm"><div class="pt">Golden State Organics <span class="amt">· demo 10:00</span></div><div class="pr">Asked about Black Friday scaling → lead with peak-traffic architecture</div></div><span class="tag">Meeting</span><span class="chev">›</span></div>
+          <div class="pbig" data-acct="harbor"><span class="rk green"></span><div class="pm"><div class="pt">Harbor &amp; Vine <span class="amt">· QBR 2:00</span></div><div class="pr">Usage up 30% QoQ → tee up the multi-store expansion</div></div><span class="tag">Upsell</span><span class="chev">›</span></div>
+        </div>
 
-          <div class="panel">
-            <div class="ph"><h2>Risk watchlist</h2><span class="meta">rule-based</span></div>
-            <div class="rules"><span class="chip r">No touch · 7 days</span><span class="chip r">No meeting · 21 days</span></div>
-            <div class="pb" style="padding-top:6px;">
-              <table class="wl">
-                <tr><td><div class="acct">Solstice Apparel</div><div class="rule">no touch in 9 days</div></td><td class="amt">$120K</td></tr>
-                <tr><td><div class="acct">Driftwood Home</div><div class="rule">no meeting in 26 days</div></td><td class="amt">$310K</td></tr>
-                <tr><td><div class="acct">Bayside Beauty</div><div class="rule">no touch in 11 days</div></td><td class="amt">$78K</td></tr>
-                <tr><td><div class="acct">Verdant Pet Co.</div><div class="rule">no meeting in 24 days</div></td><td class="amt">$137K</td></tr>
-              </table>
+        <div class="cols">
+          <!-- LEFT (wide): News, Needs attention, Follow up -->
+          <div>
+            <div class="card">
+              <div class="ch"><h2>Territory news</h2><span class="meta"><span class="livedot"></span>web monitor · 240 sources scanned · 6:50 AM</span></div>
+              <div class="ni" data-acct="tidewater"><div class="nd">📈</div><div><div class="nh">Tidewater Goods raises $40M Series C to expand fulfillment</div><div class="nso">→ Fresh expansion budget — reframe today's renewal as a growth deal.</div><div class="nmeta"><span class="nchip opp">Open opp · $185K</span><span class="nsrc">TechCrunch · 2h ago</span></div></div></div>
+              <div class="ni" data-acct="pacific"><div class="nd">🧑‍💼</div><div><div class="nh">Pacific Threads appoints a new VP of Ecommerce</div><div class="nso">→ A new economic buyer just landed — get an intro before legal resumes.</div><div class="nmeta"><span class="nchip opp">Open opp · $240K</span><span class="nsrc">LinkedIn · 5h ago</span></div></div></div>
+              <div class="ni" data-acct="driftwood"><div class="nd">⚠️</div><div><div class="nh">Driftwood Home announces a 5% workforce reduction</div><div class="nso">→ Budget pressure on an at-risk renewal — lead your recovery meeting with value realized.</div><div class="nmeta"><span class="nchip risk">Open · at risk · $310K</span><span class="nsrc">Reuters · 1d ago</span></div></div></div>
+              <div class="ni" data-acct="golden"><div class="nd">🎉</div><div><div class="nh">Golden State Organics reports a record DTC quarter</div><div class="nso">→ Use as momentum in your 10:00 demo — they're scaling and feeling it.</div><div class="nmeta"><span class="nchip opp">Open opp · demo today</span><span class="nsrc">Press release · 1d ago</span></div></div></div>
+              <div class="ni"><div class="nd">🛒</div><div><div class="nh">Shopify ships a new checkout API for peak season</div><div class="nso">→ Relevant across your whole e-commerce book — a timely outreach hook.</div><div class="nmeta"><span class="nchip mkt">Market</span><span class="nsrc">The Verge · 1d ago</span></div></div></div>
             </div>
-          </div>
 
-          <div class="panel">
-            <div class="ph"><h2>People to follow up with</h2><span class="meta">portable to your sequencer</span></div>
-            <div class="pb">
+            <div class="card">
+              <div class="ch"><h2>Needs attention</h2><span class="meta">no touch 7d · no meeting 21d</span></div>
+              <div class="wrow" data-acct="driftwood"><div class="wm"><div class="wa">Driftwood Home</div><div class="wr">No meeting in 26 days · champion left the role</div></div><span class="wv">$310K</span><span class="wact">Book recovery →</span></div>
+              <div class="wrow" data-acct="solstice"><div class="wm"><div class="wa">Solstice Apparel</div><div class="wr">No touch in 9 days · champion quiet</div></div><span class="wv">$120K</span><span class="wact">Re-engage →</span></div>
+              <div class="wrow" data-acct="harbor"><div class="wm"><div class="wa">Verdant Pet Co.</div><div class="wr">No meeting in 24 days</div></div><span class="wv">$137K</span><span class="wact">Schedule →</span></div>
+              <div class="wrow" data-acct="cascade"><div class="wm"><div class="wa">Bayside Beauty</div><div class="wr">No touch in 11 days</div></div><span class="wv">$78K</span><span class="wact">Reach out →</span></div>
+            </div>
+
+            <div class="card">
+              <div class="ch"><h2>Follow up with</h2><span class="meta">8 due today</span></div>
               <div class="fu"><span class="ci">MC</span><div><div class="who">Maya Chen</div><div class="role">VP Ecommerce · Tidewater Goods</div></div><div class="rsn">champion — gone quiet</div></div>
-              <div class="fu"><span class="ci">DP</span><div><div class="who">Devin Park</div><div class="role">Director of Ops · Cascade Outdoors</div></div><div class="rsn">promised ROI deck</div></div>
-              <div class="fu"><span class="ci">RL</span><div><div class="who">Rosa Lin</div><div class="role">Head of Digital · Solstice Apparel</div></div><div class="rsn">re-engage — 9 days quiet</div></div>
-              <div class="btnrow"><button class="btn">⤴ Export 8 to Outreach</button><span class="fnt" style="font-size:12.5px;">one click → a sequence, no retyping</span></div>
-              <div class="mt"><b>Multi-thread suggestion:</b> Pacific Threads is single-threaded on your champion. The economic buyer (CFO) and the Head of Digital are unengaged — add them before legal stalls again.</div>
+              <div class="fu"><span class="ci">DP</span><div><div class="who">Devin Park</div><div class="role">Director of Ops · Cascade Outdoors</div></div><div class="rsn">owed the ROI deck</div></div>
+              <div class="fu"><span class="ci">RL</span><div><div class="who">Rosa Lin</div><div class="role">Head of Digital · Solstice Apparel</div></div><div class="rsn">9 days quiet</div></div>
+              <div class="fu"><span class="ci">JK</span><div><div class="who">Jamie Kwon</div><div class="role">Dir. Ecommerce · Pacific Threads</div></div><div class="rsn">push legal forward</div></div>
+              <div style="padding-top:14px;"><button class="btn sm">⤴ Export all 8 to Outreach</button></div>
+              <div class="mt"><b>Multi-thread:</b> Pacific Threads is single-threaded on Jamie. Add the CFO (economic buyer) and Head of Digital before legal stalls the deal again.</div>
+            </div>
+          </div>
+
+          <!-- RIGHT: Your day (bigger), Heating up -->
+          <div>
+            <div class="card day">
+              <div class="ch"><h2>Your day</h2><span class="meta">4 meetings · 2 external</span></div>
+              <div class="blk"><span class="t">8:00</span><span>Pipeline review &amp; prep</span><span class="now">now</span></div>
+              <div class="blk"><span class="t">8:30</span><span>Prospecting — mid-market e-comm</span></div>
+              <div class="blk"><span class="t">9:30</span><span>Deal prep — Tidewater + Pacific</span></div>
+              <div class="mtg" data-acct="golden"><div class="mh"><span class="mtime">10:00</span><span class="mt2">Golden State Organics demo</span></div><div class="mctx">Eval stage · they asked about Black Friday scaling</div><span class="mprep">→ Prep: lead with peak-traffic architecture</span></div>
+              <div class="blk"><span class="t">11:30</span><span>Follow-ups + Outreach exports</span></div>
+              <div class="blk"><span class="t">1:00</span><span>Lunch / reset</span></div>
+              <div class="mtg" data-acct="harbor"><div class="mh"><span class="mtime">2:00</span><span class="mt2">Harbor &amp; Vine QBR</span></div><div class="mctx">Healthy · usage up 30% QoQ · renews in 90 days</div><span class="mprep">→ Prep: tee up the multi-store expansion</span></div>
+              <div class="blk"><span class="t">3:30</span><span>Internal pipeline sync</span></div>
+              <div class="blk"><span class="t">4:30</span><span>Admin — contained</span></div>
+            </div>
+
+            <div class="card">
+              <div class="ch"><h2>Heating up</h2><span class="meta">score ▲ this week</span></div>
+              <div class="mini" data-acct="tidewater"><div><div class="mn">Tidewater Goods</div><div class="md">Series C + hiring e-comm ops</div></div><div class="ms"><div class="msv">91</div><div class="msd">▲ +16</div></div></div>
+              <div class="mini" data-acct="solstice"><div><div class="mn">Solstice Apparel</div><div class="md">New DTC site · traffic +35%</div></div><div class="ms"><div class="msv">84</div><div class="msd">▲ +12</div></div></div>
+              <div class="mini" data-acct="coastline"><div><div class="mn">Coastline Coffee</div><div class="md">3rd fulfillment center opened</div></div><div class="ms"><div class="msv">73</div><div class="msd">▲ +11</div></div></div>
+              <div class="mini" data-acct="lumen"><div><div class="mn">Lumen Cosmetics</div><div class="md">New CRO — a past champion</div></div><div class="ms"><div class="msv">78</div><div class="msd">▲ +9</div></div></div>
             </div>
           </div>
         </div>
 
-        <div>
-          <div class="panel">
-            <div class="ph"><h2>Your day</h2><span class="meta">time-blocked</span></div>
-            <div class="pb tl">
-              <div class="row"><span class="t">8:00</span><span>Pipeline review &amp; prep</span></div>
-              <div class="row"><span class="t">8:30</span><span>Prospecting — mid-market e-comm</span><span class="tag">protected</span></div>
-              <div class="row"><span class="t">9:30</span><span>Deal prep — Tidewater + Pacific</span></div>
-              <div class="row"><span class="t">9:45</span><span>Prep: Golden State demo</span></div>
-              <div class="row mtg"><span class="t">10:00</span><span>Golden State Organics demo</span></div>
-              <div class="row"><span class="t">11:30</span><span>Follow-ups + Outreach exports</span></div>
-              <div class="row"><span class="t">1:00</span><span>Lunch / reset</span></div>
-              <div class="row mtg"><span class="t">2:00</span><span>Harbor &amp; Vine QBR</span></div>
-              <div class="row"><span class="t">3:30</span><span>Internal pipeline sync</span></div>
-              <div class="row"><span class="t">4:30</span><span>Admin — contained</span></div>
-            </div>
-          </div>
-
-          <div class="panel">
-            <div class="ph"><h2>Territory signals</h2><span class="meta">every item sourced</span></div>
-            <div class="pb">
-              <div class="sig"><div class="hd"><i class="ic">📈</i>Tidewater Goods raised a $40M Series C</div><div class="so">→ expansion budget; revisit the renewal as a growth deal <span class="src">TechCrunch</span></div></div>
-              <div class="sig"><div class="hd"><i class="ic">📰</i>Pacific Threads hired a new VP Ecommerce</div><div class="so">→ new economic buyer; intro + reset priorities <span class="src">LinkedIn</span></div></div>
-              <div class="sig"><div class="hd"><i class="ic">🛒</i>Peak season ~90 days out</div><div class="so">→ open Q4 readiness conversations across the book <span class="src">Internal</span></div></div>
-              <div class="sig"><div class="hd"><i class="ic">⚠</i>Lumen Cosmetics cut 8% of staff</div><div class="so">→ budget caution; soften the timeline ask <span class="src">News</span></div></div>
-            </div>
-          </div>
-
-          <div class="panel">
-            <div class="ph"><h2>Why these?</h2></div>
-            <div class="pb" style="font-size:12.5px; color:var(--muted);">
-              Every flag is scored and explained — never a black box. Reply <b style="color:var(--ink);">why #1</b> in Slack or click any item to see the signals behind it (last activity, stage age, champion engagement, threading, deal size).
-            </div>
-          </div>
+        <div class="foot">
+          <div>Morning Brief · Acme Sales</div>
+          <div>Read-only &amp; advisory · every flag shows its reason and source</div>
         </div>
-
       </div>
 
-      <div class="foot">
-        <div>Morning Brief · Acme Sales — internal preview</div>
-        <div>Read-only &amp; advisory · every recommendation shows its reason and source</div>
+      <!-- ===== ACCOUNTS ===== -->
+      <div id="view-accounts" class="view">
+        <div class="ahead">
+          <h1>Accounts <span class="fnt" style="font-weight:500; font-size:15px;">· 150 · West / e-commerce</span></h1>
+          <div class="pills"><span class="pill on">All</span><span class="pill">Heating up</span><span class="pill">At risk</span><span class="pill">Customers</span></div>
+        </div>
+        <div class="acctwrap">
+          <div class="alist" id="alist"></div>
+          <div id="adetail"></div>
+        </div>
       </div>
 
     </div>
   </div>
 </div>
+
+<script>
+(function(){
+  var ACC = [
+    {id:'tidewater', name:'Tidewater Goods', type:'Customer', score:91, trend:16, spark:[68,70,73,72,79,85,91], stage:'Renewal · Negotiation', value:'$185K', timing:'Renews in 8 days', hl:'risk',
+      signals:[{i:'📈',t:'Raised a $40M Series C',s:'TechCrunch'},{i:'🧑‍💼',t:'Hiring 5 e-commerce ops roles',s:'LinkedIn'}],
+      actions:['Call Maya Chen (VP Ecommerce) before noon','Reframe the renewal as a growth/expansion deal','Send the multi-store capacity proposal'],
+      contacts:[{x:'MC',n:'Maya Chen',r:'VP Ecommerce · Champion',q:true,st:'quiet 19d'},{x:'AR',n:'Aaron Reyes',r:'CFO · Economic buyer',st:'unengaged'}],
+      thread:null, activity:[{w:'19d ago',t:'Last email — no reply'},{w:'24d ago',t:'Q2 business review'},{w:'31d ago',t:'Renewal proposal sent'}]},
+    {id:'pacific', name:'Pacific Threads', type:'Prospect', score:88, trend:7, spark:[74,76,78,80,82,85,88], stage:'New business · Legal', value:'$240K', timing:'Close target in 14 days', hl:'risk',
+      signals:[{i:'📰',t:'Hired a new VP Ecommerce',s:'LinkedIn'},{i:'📦',t:'Expanding into 3 new product lines',s:'News'}],
+      actions:['Multi-thread to the CFO and Head of Digital','Get legal redlines unblocked this week','Share the security + DPA packet proactively'],
+      contacts:[{x:'JK',n:'Jamie Kwon',r:'Dir. Ecommerce · Champion',st:'engaged'},{x:'?',n:'CFO (unmapped)',r:'Economic buyer',q:true,st:'unengaged'},{x:'?',n:'Head of Digital',r:'Technical eval',q:true,st:'unengaged'}],
+      thread:'Single-threaded on Jamie. Add the CFO and Head of Digital before legal stalls the deal again.',
+      activity:[{w:'3d ago',t:'Legal sent redlines'},{w:'9d ago',t:'Pricing approved'},{w:'15d ago',t:'Demo to champion'}]},
+    {id:'solstice', name:'Solstice Apparel', type:'Customer', score:84, trend:12, spark:[70,71,73,76,79,82,84], stage:'Expansion · Discovery', value:'$120K', timing:'No touch in 9 days', hl:'cool',
+      signals:[{i:'🛍️',t:'Launched new DTC storefront',s:'Web'},{i:'📈',t:'Site traffic up 35% MoM',s:'SimilarWeb'}],
+      actions:['Re-engage Rosa Lin (Head of Digital)','Pitch peak-season capacity upsell','Share a relevant DTC scaling case study'],
+      contacts:[{x:'RL',n:'Rosa Lin',r:'Head of Digital · Champion',q:true,st:'quiet 9d'},{x:'BT',n:'Ben Tran',r:'VP Marketing',st:'warm'}],
+      thread:null, activity:[{w:'9d ago',t:'Last touch — email'},{w:'21d ago',t:'Expansion scoping'},{w:'40d ago',t:'Renewed contract'}]},
+    {id:'cascade', name:'Cascade Outdoors', type:'Customer', score:79, trend:3, spark:[74,75,76,77,78,79,79], stage:'Expansion · Proposal', value:'$95K', timing:'ROI deck promised today', hl:'ok',
+      signals:[{i:'🏔️',t:'Opening 12 new retail doors',s:'News'},{i:'🤝',t:'Hired a new VP of Ops',s:'LinkedIn'}],
+      actions:['Send the peak-season ROI model today','Confirm the expansion case with Devin','Book the exec readout'],
+      contacts:[{x:'DP',n:'Devin Park',r:'Director of Ops · Champion',st:'engaged'},{x:'SM',n:'Sara Mills',r:'VP Operations',st:'new'}],
+      thread:null, activity:[{w:'2d ago',t:'Asked for ROI deck'},{w:'8d ago',t:'Expansion discovery'},{w:'20d ago',t:'QBR — healthy'}]},
+    {id:'golden', name:'Golden State Organics', type:'Prospect', score:76, trend:5, spark:[68,70,71,73,74,75,76], stage:'New business · Eval', value:'$140K', timing:'Demo at 10:00 today', hl:'warm',
+      signals:[{i:'🛒',t:'Site crashed on Black Friday last year',s:'Press'},{i:'💸',t:'Raised a $25M growth round',s:'TechCrunch'}],
+      actions:['Lead the demo with peak-traffic architecture','Bring a comparable customer proof point','Define pilot success criteria'],
+      contacts:[{x:'PW',n:'Priya Wadhwa',r:'VP Engineering · Eval lead',st:'engaged'},{x:'TM',n:'Tom Meyer',r:'CTO · Economic buyer',st:'cc’d'}],
+      thread:null, activity:[{w:'today',t:'Demo 10:00'},{w:'6d ago',t:'Discovery call'},{w:'12d ago',t:'Inbound from site'}]},
+    {id:'harbor', name:'Harbor & Vine', type:'Customer', score:82, trend:4, spark:[76,77,78,79,80,81,82], stage:'Renewal · Healthy', value:'$210K', timing:'QBR 2:00 · renews in 90d', hl:'ok',
+      signals:[{i:'📈',t:'Product usage up 30% QoQ',s:'Internal'},{i:'🏬',t:'Opened 2 new store concepts',s:'News'}],
+      actions:['Run the QBR; lead with the 30% usage story','Tee up the multi-store expansion','Identify a second champion'],
+      contacts:[{x:'EN',n:'Elena Novak',r:'VP Digital · Champion',st:'engaged'},{x:'CR',n:'Chris Roy',r:'COO · Sponsor',st:'warm'}],
+      thread:null, activity:[{w:'today',t:'QBR 2:00'},{w:'30d ago',t:'Usage milestone'},{w:'60d ago',t:'Expansion floated'}]},
+    {id:'lumen', name:'Lumen Cosmetics', type:'Prospect', score:78, trend:9, spark:[64,66,68,70,73,76,78], stage:'New business · Prospecting', value:'$0', timing:'No open deal', hl:'warm',
+      signals:[{i:'🧑‍💼',t:'New CRO — past champion at one of your wins',s:'LinkedIn'},{i:'⚠',t:'Cut 8% of staff last quarter',s:'News'}],
+      actions:['Warm intro to the new CRO via your mutual win','Reference the prior success story','Soften the timeline given the cuts'],
+      contacts:[{x:'NV',n:'Nina Vance',r:'CRO · Past champion',st:'warm intro'}],
+      thread:null, activity:[{w:'this wk',t:'CRO appointment detected'},{w:'—',t:'No prior engagement'}]},
+    {id:'coastline', name:'Coastline Coffee', type:'Prospect', score:73, trend:11, spark:[60,62,64,66,69,71,73], stage:'New business · Prospecting', value:'$0', timing:'No open deal', hl:'warm',
+      signals:[{i:'🏭',t:'Opened a 3rd fulfillment center',s:'Press'},{i:'📈',t:'DTC subscriptions doubling',s:'News'}],
+      actions:['Open a Q4 peak-readiness conversation','Identify the ops + ecommerce buyers','Send a fulfillment-scaling teardown'],
+      contacts:[{x:'?',n:'VP Ecommerce (unmapped)',r:'Likely buyer',q:true,st:'identify'}],
+      thread:'No contacts mapped yet — start by identifying the VP Ecommerce and Head of Ops.',
+      activity:[{w:'this wk',t:'Fulfillment expansion detected'},{w:'—',t:'No prior engagement'}]},
+    {id:'driftwood', name:'Driftwood Home', type:'Customer', score:64, trend:-6, spark:[74,72,71,69,67,66,64], stage:'Renewal · At risk', value:'$310K', timing:'No meeting in 26 days', hl:'risk',
+      signals:[{i:'⚠',t:'Champion changed roles internally',s:'LinkedIn'},{i:'📉',t:'Login activity down 22%',s:'Internal'}],
+      actions:['Find and engage the new relationship owner','Book an executive recovery meeting','Bring a value-realization summary'],
+      contacts:[{x:'?',n:'New owner (unmapped)',r:'Champion left role',q:true,st:'identify'},{x:'GW',n:'Grace Wu',r:'VP Operations',st:'cold'}],
+      thread:'Champion departed the role — the relationship is orphaned. Re-map the buying group urgently.',
+      activity:[{w:'26d ago',t:'Last meeting'},{w:'34d ago',t:'Champion role change'},{w:'70d ago',t:'Renewed (now at risk)'}]}
+  ];
+
+  function spark(pts){
+    var w=128,h=38,max=Math.max.apply(null,pts),min=Math.min.apply(null,pts),rng=(max-min)||1,step=w/(pts.length-1);
+    var pl=pts.map(function(p,i){return (i*step).toFixed(1)+','+(h-3-((p-min)/rng)*(h-6)).toFixed(1);}).join(' ');
+    var up=pts[pts.length-1]>=pts[0], col=up?'var(--accent)':'var(--red)';
+    return '<svg viewBox="0 0 '+w+' '+h+'" width="'+w+'" height="'+h+'" preserveAspectRatio="none"><polyline points="'+pl+'" fill="none" stroke="'+col+'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  }
+  function ring(score){
+    var r=27,c=2*Math.PI*r,off=c*(1-score/100);
+    var col=score>=80?'var(--accent)':score>=65?'var(--amber)':'var(--red)';
+    return '<svg width="68" height="68" viewBox="0 0 68 68"><circle cx="34" cy="34" r="'+r+'" fill="none" stroke="var(--line)" stroke-width="6"/><circle cx="34" cy="34" r="'+r+'" fill="none" stroke="'+col+'" stroke-width="6" stroke-linecap="round" stroke-dasharray="'+c.toFixed(1)+'" stroke-dashoffset="'+off.toFixed(1)+'" transform="rotate(-90 34 34)"/><text x="34" y="39" text-anchor="middle" font-size="18" font-weight="800" fill="var(--ink)">'+score+'</text></svg>';
+  }
+  function trendChip(t){
+    if(t>0) return '<span class="dtr">▲ +'+t+'</span>';
+    if(t<0) return '<span class="dtr dn">▼ '+t+'</span>';
+    return '<span class="dtr" style="color:var(--muted);background:var(--panel2)">steady</span>';
+  }
+  function initials(n){ return n.split(' ').map(function(w){return w[0];}).join('').slice(0,2); }
+
+  function listRow(a){
+    var d=a.trend>0?'<span class="asd up">▲ '+a.trend+'</span>':a.trend<0?'<span class="asd dn2">▼ '+Math.abs(a.trend)+'</span>':'<span class="asd fnt">—</span>';
+    return '<div class="arow" data-acct="'+a.id+'"><div class="ab">'+initials(a.name)+'</div>'+
+      '<div><div class="an">'+a.name+'</div><div class="at">'+a.type+' · '+a.stage.split(' · ')[0]+'</div></div>'+
+      '<div class="as"><div class="asv">'+a.score+'</div>'+d+'</div></div>';
+  }
+  function detailHTML(a){
+    var hlnames={risk:'At risk',cool:'Cooling',ok:'On track',warm:'Warming'};
+    var sig=a.signals.map(function(s){return '<div class="sig"><div><i class="ic">'+s.i+'</i>'+s.t+' <span class="src">'+s.s+'</span></div></div>';}).join('');
+    var acts=a.actions.map(function(x){return '<li>'+x+'</li>';}).join('');
+    var cts=a.contacts.map(function(c){return '<div class="ct"><span class="ci">'+c.x+'</span><div><div style="font-weight:600">'+c.n+'</div><div style="color:var(--muted);font-size:12px">'+c.r+'</div></div><span class="st'+(c.q?' q':'')+'">'+c.st+'</span></div>';}).join('');
+    var thread=a.thread?'<div class="mt" style="margin-top:12px"><b>Multi-thread:</b> '+a.thread+'</div>':'';
+    var act=a.activity.map(function(e){return '<div class="r"><span class="w">'+e.w+'</span><span>'+e.t+'</span></div>';}).join('');
+    return ''+
+    '<div class="dhead"><div class="dl"><h2>'+a.name+'</h2><div class="sub">'+a.type+' · '+a.stage+' · West / e-commerce</div></div>'+
+      '<span class="hl '+a.hl+'">'+(hlnames[a.hl]||'')+'</span><button class="btn ghost sm">Open in CRM ↗</button></div>'+
+    '<div class="dhero">'+
+      '<div style="display:flex;align-items:center;gap:14px">'+ring(a.score)+'<div><div style="font-size:11.5px;color:var(--muted);margin-bottom:4px">AI account score</div>'+trendChip(a.trend)+'<div class="sp">'+spark(a.spark)+'</div></div></div>'+
+      '<div class="dfacts">'+
+        '<div class="dfact"><div class="l">Open deal value</div><div class="v">'+a.value+'</div></div>'+
+        '<div class="dfact"><div class="l">Stage</div><div class="v">'+a.stage.split(' · ').slice(1).join(' · ')+'</div></div>'+
+        '<div class="dfact"><div class="l">Status</div><div class="v">'+a.timing+'</div></div>'+
+      '</div></div>'+
+    '<div class="dgrid">'+
+      '<div><div class="card"><div class="ch"><h2>Recommended actions</h2></div><ul class="acts">'+acts+'</ul><div style="padding:10px 0 4px"><button class="btn sm">Do the top action</button></div></div>'+
+        '<div class="card"><div class="ch"><h2>Signals &amp; news</h2><span class="meta">sourced</span></div>'+sig+'</div></div>'+
+      '<div><div class="card"><div class="ch"><h2>Buying group</h2><span class="meta">threading</span></div>'+cts+thread+'</div>'+
+        '<div class="card"><div class="ch"><h2>Recent activity</h2></div><div class="av">'+act+'</div></div></div>'+
+    '</div>';
+  }
+
+  var alist=document.getElementById('alist'), adetail=document.getElementById('adetail');
+  alist.innerHTML=ACC.map(listRow).join('');
+  function select(id){
+    var a=ACC.filter(function(x){return x.id===id;})[0]; if(!a) return;
+    adetail.innerHTML=detailHTML(a);
+    Array.prototype.forEach.call(alist.children,function(r){ r.classList.toggle('on', r.getAttribute('data-acct')===id); });
+  }
+  function showView(v){
+    document.getElementById('view-brief').classList.toggle('on', v==='brief');
+    document.getElementById('view-accounts').classList.toggle('on', v==='accounts');
+    Array.prototype.forEach.call(document.querySelectorAll('.nav a[data-view]'),function(n){ n.classList.toggle('on', n.getAttribute('data-view')===v); });
+    window.scrollTo(0,0);
+  }
+  select(ACC[0].id);
+  document.querySelectorAll('.nav a[data-view]').forEach(function(n){ n.addEventListener('click', function(){ showView(n.getAttribute('data-view')); }); });
+  alist.addEventListener('click', function(e){ var r=e.target.closest('.arow'); if(r) select(r.getAttribute('data-acct')); });
+  document.addEventListener('click', function(e){
+    var el=e.target.closest('[data-acct]'); if(!el || el.classList.contains('arow')) return;
+    var id=el.getAttribute('data-acct'); showView('accounts'); select(id);
+  });
+})();
+</script>
 </body>
 </html>
