@@ -95,8 +95,14 @@
   .pbig .tag{font-size:11px; color:var(--faint); white-space:nowrap;} .pbig .tag.risk{color:var(--red-ink);}
   .pbig .chev{color:var(--faint); font-size:16px;}
 
-  .cols{display:grid; grid-template-columns:1.6fr 1fr; gap:24px; align-items:start;}
-  @media(max-width:980px){ .cols{grid-template-columns:1fr;} }
+  .bgrid{display:grid; grid-template-columns:minmax(0,1fr) 312px; gap:24px; align-items:start;
+    grid-template-areas:"band day" "prio day" "lower heat";}
+  .bgrid > .band{grid-area:band; margin-bottom:0;}
+  .bgrid > .phero{grid-area:prio; margin-bottom:0;}
+  .bgrid > .day{grid-area:day; margin-bottom:0; align-self:stretch;}
+  .bgrid > .lower{grid-area:lower; min-width:0;}
+  .bgrid > .heat{grid-area:heat; margin-bottom:0;}
+  @media(max-width:980px){ .bgrid{grid-template-columns:1fr; grid-template-areas:"band" "prio" "day" "lower" "heat";} .bgrid > .day{align-self:start;} }
 
   /* news */
   .ni{display:flex; gap:13px; padding:14px 0; border-top:1px solid var(--line2); cursor:pointer;}
@@ -233,6 +239,7 @@
           <p>You have <b>5 priorities</b>, <b>4 meetings</b>, and <b>6 deals worth $820K</b> that need attention today.</p>
         </div>
 
+        <div class="bgrid">
         <div class="band">
           <div class="quota">
             <div class="qt"><span class="pct">68%</span><span class="ql">to Q3 quota · $1.36M of $2.0M</span></div>
@@ -262,9 +269,7 @@
           <div class="pbig" data-acct="harbor"><span class="rk green"></span><div class="pm"><div class="pt">Harbor &amp; Vine <span class="amt">· QBR 2:00</span></div><div class="pr">Usage up 30% QoQ → tee up the multi-store expansion</div></div><span class="tag">Upsell</span><span class="chev">›</span></div>
         </div>
 
-        <div class="cols">
-          <!-- LEFT (wide): News, Needs attention, Follow up -->
-          <div>
+        <div class="lower">
             <div class="card">
               <div class="ch"><h2>Territory news</h2><span class="meta"><span class="livedot"></span>web monitor · 240 sources scanned · 6:50 AM</span></div>
               <div class="ni" data-acct="tidewater"><div class="nd">📈</div><div><div class="nh">Tidewater Goods raises $40M Series C to expand fulfillment</div><div class="nso">→ Fresh expansion budget — reframe today's renewal as a growth deal.</div><div class="nmeta"><span class="nchip opp">Open opp · $185K</span><span class="nsrc">TechCrunch · 2h ago</span></div></div></div>
@@ -293,9 +298,7 @@
             </div>
           </div>
 
-          <!-- RIGHT: Your day (bigger), Heating up -->
-          <div>
-            <div class="card day">
+          <div class="card day">
               <div class="ch"><h2>Your day</h2><span class="meta">4 meetings · 2 external</span></div>
               <div class="blk"><span class="t">8:00</span><span>Pipeline review &amp; prep</span><span class="now">now</span></div>
               <div class="blk"><span class="t">8:30</span><span>Prospecting — mid-market e-comm</span></div>
@@ -308,14 +311,13 @@
               <div class="blk"><span class="t">4:30</span><span>Admin — contained</span></div>
             </div>
 
-            <div class="card">
+            <div class="card heat">
               <div class="ch"><h2>Heating up</h2><span class="meta">score ▲ this week</span></div>
               <div class="mini" data-acct="tidewater"><div><div class="mn">Tidewater Goods</div><div class="md">Series C + hiring e-comm ops</div></div><div class="ms"><div class="msv">91</div><div class="msd">▲ +16</div></div></div>
               <div class="mini" data-acct="solstice"><div><div class="mn">Solstice Apparel</div><div class="md">New DTC site · traffic +35%</div></div><div class="ms"><div class="msv">84</div><div class="msd">▲ +12</div></div></div>
               <div class="mini" data-acct="coastline"><div><div class="mn">Coastline Coffee</div><div class="md">3rd fulfillment center opened</div></div><div class="ms"><div class="msv">73</div><div class="msd">▲ +11</div></div></div>
               <div class="mini" data-acct="lumen"><div><div class="mn">Lumen Cosmetics</div><div class="md">New CRO — a past champion</div></div><div class="ms"><div class="msv">78</div><div class="msd">▲ +9</div></div></div>
             </div>
-          </div>
         </div>
 
         <div class="foot">
