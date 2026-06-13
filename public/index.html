@@ -206,6 +206,20 @@
   .av .r{display:flex;gap:12px;padding:9px 0;border-top:1px solid var(--line2);font-size:12.5px;} .av .r:first-child{border-top:none;}
   .av .w{min-width:70px;color:var(--faint);font-size:11.5px;}
 
+  /* today's plays */
+  .plays .play{border:1px solid var(--line); border-radius:var(--r-sm); padding:13px 15px; margin-bottom:10px; background:var(--panel2); cursor:pointer;}
+  .plays .play:hover{border-color:var(--accent);}
+  .plays .ph2{display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;}
+  .plays .pa{font-weight:600; font-size:14px;}
+  .ptag{font-size:10px; font-weight:700; padding:2px 8px; border-radius:6px;}
+  .ptag.exp{background:var(--accent-soft); color:var(--accent-ink);}
+  .ptag.new{background:var(--blue-soft); color:var(--blue-ink);}
+  .ptag.mt{background:var(--amber-soft); color:var(--amber-ink);}
+  .plays .to{font-size:12.5px; color:var(--muted); margin-bottom:7px;}
+  .plays .to b{color:var(--ink2);}
+  .plays .msg{font-size:12.5px; color:var(--ink2); background:var(--bg); border-left:2px solid var(--line); padding:8px 11px; border-radius:0 7px 7px 0; margin-bottom:11px; line-height:1.55;}
+  .plays .arow{display:flex; gap:8px;}
+
   /* copilot */
   .cop-launch{position:fixed; right:22px; bottom:22px; z-index:50; display:inline-flex; align-items:center; gap:8px; background:var(--accent); color:var(--accent-dk); font-weight:700; font-size:13.5px; padding:12px 18px; border-radius:99px; border:none; cursor:pointer; box-shadow:0 8px 26px rgba(0,0,0,.45);}
   .cop-panel{position:fixed; right:0; top:0; height:100vh; width:384px; max-width:92vw; background:var(--panel); border-left:1px solid var(--line); z-index:60; display:flex; flex-direction:column; transform:translateX(105%); transition:transform .22s ease;}
@@ -296,6 +310,27 @@
         </div>
 
         <div class="lower">
+            <div class="card plays">
+              <div class="ch"><h2>Today's plays</h2><span class="meta">drafted for you · approve to send</span></div>
+              <div class="play" data-acct="tidewater">
+                <div class="ph2"><span class="pa">Tidewater Goods</span><span class="ptag exp">Re-engage</span></div>
+                <div class="to">To: <b>Maya Chen</b> · VP Ecommerce (champion)</div>
+                <div class="msg">"Maya — congrats on the Series C, huge milestone. With the new fulfillment investment, worth 20 minutes this week to map peak-season capacity? I've got a couple of ideas specific to your DTC growth."</div>
+                <div class="arow"><button class="abtn ok">Approve &amp; send</button><button class="abtn no">Edit</button></div>
+              </div>
+              <div class="play" data-acct="coastline">
+                <div class="ph2"><span class="pa">Coastline Coffee</span><span class="ptag new">New prospect</span></div>
+                <div class="to">To: <b>VP Ecommerce</b> · identified from the signal</div>
+                <div class="msg">"Saw Coastline just opened a third fulfillment center — congrats. Most DTC subscription brands hit checkout and inventory scaling pain right around this stage; happy to share how a few peers handled it before Q4."</div>
+                <div class="arow"><button class="abtn ok">Approve &amp; send</button><button class="abtn no">Edit</button></div>
+              </div>
+              <div class="play" data-acct="pacific">
+                <div class="ph2"><span class="pa">Pacific Threads</span><span class="ptag mt">Multi-thread</span></div>
+                <div class="to">To: <b>CFO</b> · economic buyer (unengaged)</div>
+                <div class="msg">"As we finalize with Jamie's team, wanted to introduce myself directly — happy to walk through the ROI and commercial terms so the economics are clear on your side ahead of sign-off."</div>
+                <div class="arow"><button class="abtn ok">Approve &amp; send</button><button class="abtn no">Edit</button></div>
+              </div>
+            </div>
             <div class="card">
               <div class="ch"><h2>Territory news</h2><span class="meta"><span class="livedot"></span>web monitor · 240 sources scanned · 6:50 AM</span></div>
               <div class="ni" data-acct="tidewater"><div class="nd">📈</div><div><div class="nh">Tidewater Goods raises $40M Series C to expand fulfillment</div><div class="nso">→ Fresh expansion budget — reframe today's renewal as a growth deal.</div><div class="nmeta"><span class="nchip opp">Open opp · $185K</span><span class="nsrc">TechCrunch · 2h ago</span></div></div></div>
@@ -407,6 +442,12 @@
     var row=b.closest('.arow');
     row.innerHTML = b.classList.contains('ok') ? '<span class="done">✓ Done · logged to audit trail</span>' : '<span class="done" style="color:var(--muted)">Dismissed</span>';
   });
+  document.addEventListener('click', function(e){
+    var b=e.target.closest('.plays .abtn'); if(!b) return;
+    e.stopPropagation();
+    var row=b.closest('.arow');
+    row.innerHTML = b.classList.contains('ok') ? '<span class="done">✓ Sent · logged</span>' : '<span class="done" style="color:var(--muted)">Skipped</span>';
+  }, true);
 })();
 </script>
 

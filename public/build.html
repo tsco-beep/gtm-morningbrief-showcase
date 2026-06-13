@@ -124,6 +124,7 @@
         <li><span class="pill m">D</span> &nbsp;Add the news agent + LLM assembly, then the dashboard read-API.</li>
         <li><span class="pill a">E</span> &nbsp;Pilot with 5–8 reps, tune weights, then roll out.</li>
       </ul>
+      <p><strong>Push, not pull.</strong> The objective isn't a dashboard the rep visits — it's a system that does the work and pushes back ready-to-approve <em>plays</em>: the account to focus on, the person to target, and a drafted message in the rep's voice. The rep moves from researching accounts, identifying prospects, and writing copy to a 20-second approve / edit decision. The scoring, news, and assembly jobs generate these plays during the morning run; the copilot (§09) executes them on approval.</p>
       <div class="note">Design principle: the daily agent is <strong>read-only and advisory</strong>. Any write action runs through the copilot (§09), which acts as the signed-in user with explicit confirmation — so the riskiest scopes are never granted to an autonomous background job.</div>
     </section>
 
@@ -316,6 +317,7 @@
     <section id="copilot">
       <h2><span class="num">09</span>Conversational copilot (action agent)</h2>
       <p>Everything above is read-only insight. The copilot is the layer that turns the brief into action — a chat assistant embedded in the dashboard that can draft a follow-up, update a deal, create a task, or book a meeting on the user's instruction. It is the only component that writes to source systems, and it does so <strong>as the signed-in user</strong>, with confirmation.</p>
+      <p>It also works <strong>proactively (push)</strong>: the morning run pre-generates a set of <em>plays</em> — each a target account, the identified contact, and a drafted message — so they're waiting for one-tap approval rather than requested. The same tool registry and confirmation flow apply; a play is just a pre-staged tool call the user approves.</p>
 
       <h3>How it works</h3>
       <p>It's a tool-calling agent. Each action the company wants to allow is registered as a <em>tool</em> — a thin wrapper around one scoped API call (e.g. <code>update_opportunity</code>, <code>draft_email</code>, <code>create_task</code>). The user types a request; the agent plans, calls the needed tools, and returns results. Read tools run directly; write tools are proposed for confirmation first.</p>
